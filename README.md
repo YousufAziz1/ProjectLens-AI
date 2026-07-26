@@ -146,11 +146,11 @@ The core engine powers a streaming route mapped to `POST /api/analyze`.
 ## 📸 Screenshots & Showcase
 <div align="center">
   <h3>The Command Center Landing</h3>
-  <img src="./public/landing.png" width="800" alt="Landing Page">
+  <img src="./public/landing.webp" width="800" alt="Landing Page">
   <h3>Real-Time AI Multi-Agent Extractor</h3>
-  <img src="./public/analysis.png" width="800" alt="Analysis Dashboard">
+  <img src="./public/analysis.webp" width="800" alt="Analysis Dashboard">
   <h3>Mathematically Validated Final Security Grade</h3>
-  <img src="./public/report.png" width="800" alt="Report Score Matrix">
+  <img src="./public/report.webp" width="800" alt="Report Score Matrix">
 </div>
 
 ### Known Limitations
