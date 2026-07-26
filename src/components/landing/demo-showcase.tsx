@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export function DemoShowcase() {
     return (
-        <section className="py-24 bg-zinc-950 px-4 border-t border-border/40 font-sans">
+        <section className="py-24 bg-zinc-50 dark:bg-zinc-950 px-4 border-t border-border/40 font-sans">
             <div className="max-w-6xl mx-auto space-y-12">
                 <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-border/40 pb-8">
                     <div className="space-y-3">
