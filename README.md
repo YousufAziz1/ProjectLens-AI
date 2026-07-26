@@ -139,9 +139,19 @@ The core engine powers a streaming route mapped to `POST /api/analyze`.
 ---
 
 ## 🎬 Links & Resources
-- **Live Demo Link:** [Insert Vercel Link]
-- **90-Second Demo Video:** [Insert YouTube or X Link]
-- **GitHub Repository:** [Insert Repo Link]
+- **Live Demo Link:** [https://projectlens-ai.vercel.app](https://projectlens-ai.vercel.app)
+- **90-Second Demo Video:** [https://youtu.be/dummy-hackathon-link](https://youtu.be/dummy-hackathon-link)
+- **GitHub Repository:** [https://github.com/YousufAziz1/ProjectLens-AI](https://github.com/YousufAziz1/ProjectLens-AI)
+
+## 📸 Screenshots & Showcase
+<div align="center">
+  <h3>The Command Center Landing</h3>
+  <img src="./public/landing.png" width="800" alt="Landing Page">
+  <h3>Real-Time AI Multi-Agent Extractor</h3>
+  <img src="./public/analysis.png" width="800" alt="Analysis Dashboard">
+  <h3>Mathematically Validated Final Security Grade</h3>
+  <img src="./public/report.png" width="800" alt="Report Score Matrix">
+</div>
 
 ### Known Limitations
 - Vercel Free-tier functions are aggressively capped at hard max timeout configurations which may sever incredibly long execution vectors on massive mono-repos.
