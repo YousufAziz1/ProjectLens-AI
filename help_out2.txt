@@ -1,0 +1,13 @@
+﻿Register a new Agent identity
+
+Usage: onchainos.exe agent create [OPTIONS]
+
+Options:
+      --base-url <BASE_URL>        Backend service URL (overrides config)
+      --name <NAME>                Required (all roles). The agent name. Missing / empty ΓåÆ `missing required parameter: --name`
+      --chain <CHAIN>              Chain: ethereum, solana, base, bsc, polygon, arbitrum, sui, etc
+      --role <ROLE>                Required. One of `user` / `asp` / `evaluator`. Fixed at create ΓÇö cannot be changed by `update`
+      --description <DESCRIPTION>  Agent description. Required for `asp`; optional for `user` / `evaluator`
+      --picture <PICTURE>          Profile-picture URL (upload an image via `agent upload` first, then pass the returned URL). Required for `asp` (no avatar ΓåÆ `ASP agents require an avatar`); optional for `user` / `evaluator` (omitted ΓåÆ default avatar)
+      --service <SERVICE>          Service list as a JSON array. Element keys: `serviceName`, `serviceDescription`, `serviceType` (`A2A` | `A2MCP`), `fee` (A2MCP required, A2A optional ΓÇö plain number, USDT implied, Γëñ6 decimals), `endpoint` (A2MCP only; A2A must omit it). Required for `asp`: at least one service (empty ΓåÆ `ASP agents require at least one service`); ignored for `user` / `evaluator`
+  -h, --help                       Print help
