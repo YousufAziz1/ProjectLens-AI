@@ -41,7 +41,7 @@ export function Footer() {
                                     <Link href="/architecture" className="hover:text-primary transition-colors hover:translate-x-1 inline-block transform duration-200">Documentation</Link>
                                 </li>
                                 <li>
-                                    <a href="https://github.com/YousufAziz1/bagslaunchkit" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors hover:translate-x-1 inline-block transform duration-200">GitHub Open Source ↗</a>
+                                    <a href="https://github.com/YousufAziz1/ProjectLens-AI" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors hover:translate-x-1 inline-block transform duration-200">GitHub Open Source ↗</a>
                                 </li>
                                 <li>
                                     <Link href="/dashboard" className="hover:text-primary transition-colors hover:translate-x-1 inline-block transform duration-200">Security Parameters</Link>
@@ -53,10 +53,7 @@ export function Footer() {
                             <p className="font-bold text-foreground mb-4">Community</p>
                             <ul className="space-y-3 text-sm text-muted-foreground">
                                 <li>
-                                    <a href="https://x.com/okx" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors hover:translate-x-1 inline-block transform duration-200 flex items-center gap-2">X (Twitter) ↗</a>
-                                </li>
-                                <li>
-                                    <a href="https://discord.com" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors hover:translate-x-1 inline-block transform duration-200 flex items-center gap-2">Discord ↗</a>
+                                    <a href="https://x.com/ProjectLensAi" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors hover:translate-x-1 inline-block transform duration-200 flex items-center gap-2">X (Twitter) ↗</a>
                                 </li>
                             </ul>
                         </div>
