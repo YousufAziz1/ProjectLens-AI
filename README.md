@@ -139,8 +139,8 @@ The core engine powers a streaming route mapped to `POST /api/analyze`.
 ---
 
 ## 🎬 Links & Resources
-- **Live Demo Link:** [https://projectlens-ai.vercel.app](https://projectlens-ai.vercel.app)
-- **90-Second Demo Video:** [https://youtu.be/dummy-hackathon-link](https://youtu.be/dummy-hackathon-link)
+- **Live Demo Link:** [https://projectlens-ai.vercel.app](https://project-lens-ai.vercel.app/)
+- ** Demo Video:** https://youtu.be/gv9_Xppp8n8?si=-B5ToAWG50EMgwoE
 - **GitHub Repository:** [https://github.com/YousufAziz1/ProjectLens-AI](https://github.com/YousufAziz1/ProjectLens-AI)
 
 ## 📸 Screenshots & Showcase
