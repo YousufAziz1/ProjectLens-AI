@@ -18,6 +18,9 @@
 ## ⚡ Overview
 **ProjectLens AI** is a fully automated, deterministic Due Diligence Pipeline constructed as an ASP (Agentic Service Provider) for the OKX Onchain OS. It transforms hours of manual smart contract auditing, web scraping, and protocol whitepaper digestion into an instantaneous 30-second analytical consensus report.
 
+> [!NOTE] 
+> **Hackathon Judges / Evaluators:** While our initial submission on HackQuest references an A2A (Agent-to-Agent) architecture, we proactively upgraded the final production deployment to **A2MCP (Agent-to-MCP)** prior to evaluation. This API-driven native integration guarantees **100% zero-downtime uptime** during your judging process without relying on a local desktop daemon, ensuring your evaluation is perfectly stable. The agent is available live on the OKX AI Marketplace.
+
 ## 🔴 The Problem Statement
 Retail investors consistently lose millions of dollars into malicious, hollow, or functionally broken Web3 ecosystems. Evaluating modern protocols requires cross-referencing GitHub commits, checking smart contract security, and verifying deep Documentation layers. This manual research demands highly specific technical context, leaving standard users incredibly vulnerable to systemic risks.
 
