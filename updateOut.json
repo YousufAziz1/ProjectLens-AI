@@ -1,0 +1,1 @@
+{"ok":false,"error":"A2A communication is not ready, so this operation was not executed. okx-a2a is not installed. Install and initialize it: run `npm i -g @okxweb3/a2a-node`, then `okx-a2a doctor --fix`."}

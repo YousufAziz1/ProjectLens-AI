@@ -80,6 +80,9 @@ export default function AnalyzePage() {
                             if (payload.stage) {
                                 setProgress(prev => [...prev, payload.stage]);
                             } else if (payload.success && payload.id) {
+                                if (payload.report) {
+                                    sessionStorage.setItem('projectlens-report-' + payload.id, JSON.stringify(payload.report));
+                                }
                                 setSuccessId(payload.id);
                             } else if (payload.error) {
                                 throw new Error(payload.error);

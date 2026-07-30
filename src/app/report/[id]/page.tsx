@@ -1,7 +1,9 @@
-import { notFound } from 'next/navigation';
-import { storage } from '@/lib/storage';
+'use client';
+
+import { useEffect, useState, use } from 'react';
+import { notFound, useRouter } from 'next/navigation';
 import { FinalReport } from '@/lib/ai/schemas';
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, XCircle, AlertCircle, Clock, Info, Check, AlertTriangle, Bug, FileText, Blocks, Shield, GitBranch, BookOpen, Users, Coins } from 'lucide-react';
@@ -29,36 +31,71 @@ function parseFindingTitle(raw: string) {
     return { title, severity };
 }
 
-export default async function ReportPage(props: { params: Promise<{ id: string }> }) {
-    const params = await props.params;
-    let data: FinalReport | null = null;
-    if (params.id === 'demo-fallback-id') {
-        data = {
-            projectName: 'ProjectLens Benchmark Asset',
-            generatedAt: new Date().toISOString(),
-            sections: [
-                { title: 'Executive Summary', content: 'ProjectLens AI executed a mathematically rigorous deterministic Web3 Security audit on ProjectLens Benchmark Asset.\n\n**Audit Matrix**:\n- **Security Integrity**: 90/100 (0 severe risks identified)\n- **Repository Health**: 82/100 (186 recent commits from 4 contributors)\n- **Documentation Coverage**: 85/100 (0 structural sections missing)\n- **Transparency Base**: 70/100 (2 independent data sources cryptographically verified)\n- **Tokenomics Model**: Not Discovered or Unavailable\n\n**Overall Weighted Protocol Score**: **84/100** points mapped across 2 distinct verification vectors.', score: 84 },
-            ],
-            strengths: ['[LOW] Decentralized Governance Structure', '[LOW] Strong Liquidity Pool Depth'],
-            weaknesses: ['[MEDIUM] Admin Keys Not Burned'],
-            missingInformation: ['Whitepaper PDF layer missing from contextual traces.'],
-            evidence: [
-                { id: 'ev-demo-1', claimId: 'claim-1', sourceType: 'github', confidence: 'high', snippet: 'function executeProposal() public onlyAdmin { ... }', source: 'https://github.com/projectlens/showcase/blob/main/Governance.sol#L14', agentName: 'GitHub Agent', findingTitle: 'Admin Keys Not Burned' },
-                { id: 'ev-demo-2', claimId: 'claim-2', sourceType: 'documentation', confidence: 'high', snippet: 'Governance operations are secured via segmented protocol multisig constraints limiting arbitrary calls.', source: 'https://docs.projectlens.ai/governance.md', agentName: 'Documentation Agent', findingTitle: 'Decentralized Governance Structure' }
-            ],
-            githubData: { stars: 124, forks: 42, openIssues: 37, license: 'MIT License', contributorsCount: 4, releases: 0, lastCommitDate: new Date().toISOString(), recentCommits: [] },
-            categoryScores: { security: 90, repository: 82, documentation: 85, transparency: 70, tokenomics: 0 },
-            evidenceCoverage: 70,
-            coveragePenalties: [{ reason: 'Missing Complete Tokenomics', penalty: 20 }, { reason: 'Insufficient Parallel Audits', penalty: 10 }],
-            extractedFacts: { docSections: ['Governance', 'Overview'], missingDocSections: [], securityPatterns: ['Multisig'], ecosystemIntegrations: ['Chainlink Oracle Networks', 'Arbitrum Stylus'] },
-            disclaimer: 'This is a strictly formatted mock report generated exclusively for the Hackathon visual demonstration pipeline.'
-        };
-    } else {
-        data = (await storage.getCollection(params.id)) as unknown as FinalReport;
+export default function ReportPage(props: { params: Promise<{ id: string }> }) {
+    const params = use(props.params);
+    const router = useRouter();
+    const [data, setData] = useState<FinalReport | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (params.id === 'demo-fallback-id') {
+            setData({
+                projectName: 'ProjectLens Benchmark Asset',
+                generatedAt: new Date().toISOString(),
+                sections: [
+                    { title: 'Executive Summary', content: 'ProjectLens AI executed a mathematically rigorous deterministic Web3 Security audit on ProjectLens Benchmark Asset.\n\n**Audit Matrix**:\n- **Security Integrity**: 90/100 (0 severe risks identified)\n- **Repository Health**: 82/100 (186 recent commits from 4 contributors)\n- **Documentation Coverage**: 85/100 (0 structural sections missing)\n- **Transparency Base**: 70/100 (2 independent data sources cryptographically verified)\n- **Tokenomics Model**: Not Discovered or Unavailable\n\n**Overall Weighted Protocol Score**: **84/100** points mapped across 2 distinct verification vectors.', score: 84 },
+                ],
+                strengths: ['[LOW] Decentralized Governance Structure', '[LOW] Strong Liquidity Pool Depth'],
+                weaknesses: ['[MEDIUM] Admin Keys Not Burned'],
+                missingInformation: ['Whitepaper PDF layer missing from contextual traces.'],
+                evidence: [
+                    { id: 'ev-demo-1', claimId: 'claim-1', sourceType: 'github', confidence: 'high', snippet: 'function executeProposal() public onlyAdmin { ... }', source: 'https://github.com/projectlens/showcase/blob/main/Governance.sol#L14', agentName: 'GitHub Agent', findingTitle: 'Admin Keys Not Burned' },
+                    { id: 'ev-demo-2', claimId: 'claim-2', sourceType: 'documentation', confidence: 'high', snippet: 'Governance operations are secured via segmented protocol multisig constraints limiting arbitrary calls.', source: 'https://docs.projectlens.ai/governance.md', agentName: 'Documentation Agent', findingTitle: 'Decentralized Governance Structure' }
+                ],
+                githubData: { stars: 124, forks: 42, openIssues: 37, license: 'MIT License', contributorsCount: 4, releases: 0, lastCommitDate: new Date().toISOString(), recentCommits: [] },
+                categoryScores: { security: 90, repository: 82, documentation: 85, transparency: 70, tokenomics: 0 },
+                evidenceCoverage: 70,
+                coveragePenalties: [{ reason: 'Missing Complete Tokenomics', penalty: 20 }, { reason: 'Insufficient Parallel Audits', penalty: 10 }],
+                extractedFacts: { docSections: ['Governance', 'Overview'], missingDocSections: [], securityPatterns: ['Multisig'], ecosystemIntegrations: ['Chainlink Oracle Networks', 'Arbitrum Stylus'] },
+                disclaimer: 'This is a strictly formatted mock report generated exclusively for the Hackathon visual demonstration pipeline.'
+            });
+            setIsLoading(false);
+        } else {
+            // First check sessionStorage for live reports
+            const cached = sessionStorage.getItem('projectlens-report-' + params.id);
+            if (cached) {
+                try {
+                    setData(JSON.parse(cached));
+                } catch (e) {
+                    console.error('Failed to parse cached report', e);
+                }
+                setIsLoading(false);
+            } else {
+                // If not in sessionStorage, check server API (for local environments)
+                fetch(`/api/report/${params.id}`)
+                    .then(r => r.ok ? r.json() : null)
+                    .then(d => {
+                        if (d) setData(d);
+                    })
+                    .catch(() => { })
+                    .finally(() => setIsLoading(false));
+            }
+        }
+    }, [params.id]);
+
+    if (isLoading) {
+        return <div className="flex flex-col h-screen items-center justify-center bg-zinc-950 text-white font-mono"><span className="animate-spin border-4 border-emerald-500 border-t-transparent rounded-full w-12 h-12 mb-6 shadow-[0_0_15px_rgba(16,185,129,0.5)]"></span> <span className="uppercase tracking-widest text-sm font-bold text-emerald-400">Loading Intelligence Map...</span></div>;
     }
 
     if (!data || !data.sections) {
-        notFound();
+        return (
+            <div className="flex flex-col h-screen items-center justify-center bg-zinc-950 text-white font-mono">
+                <AlertTriangle className="w-16 h-16 text-yellow-500 mb-6 drop-shadow-2xl" />
+                <h2 className="text-2xl font-bold mb-2">Report Expired or Not Found</h2>
+                <p className="text-muted-foreground w-96 text-center text-sm leading-relaxed mb-8">For security and performance, reports are not stored permanently on this demonstration server. Please generate a new audit trace.</p>
+                <Button onClick={() => router.push('/analyze')} className="px-6 py-6 border border-emerald-500/20 bg-emerald-600/10 hover:bg-emerald-600 hover:text-white text-emerald-500 rounded-xl font-bold uppercase tracking-wider text-sm transition-all shadow-xl">Start New Analysis &rarr;</Button>
+            </div>
+        );
     }
 
     const execSummary = data.sections.find(s => s.title === 'Executive Summary');

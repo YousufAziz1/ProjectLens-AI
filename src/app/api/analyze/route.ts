@@ -79,10 +79,11 @@ export async function POST(request: Request) {
                     const reportAgent = new MasterReportAgent();
                     const finalReport = reportAgent.compileReport(projectName, normalizedResult, collectedData);
 
+                    // Still save locally for non-Vercel dev environments
                     await storage.saveCollection(id, finalReport as unknown as UnifiedCollectorOutput);
 
                     emit("Complete");
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({ id, success: true })}\n\n`));
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({ id, success: true, report: finalReport })}\n\n`));
                     controller.close();
                 } catch (err) {
                     const msg = err instanceof Error ? err.message : String(err);
