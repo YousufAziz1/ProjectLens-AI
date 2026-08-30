@@ -99,8 +99,13 @@ export async function POST(request: Request) {
 
                             emit("GenLayer Consensus", { genlayer_status: GenLayerVerificationStatus.EXECUTING });
 
-                            // Submit to GenLayer contract and wait for consensus
-                            genlayerResult = await submitVerification(evidence);
+                            // Submit to GenLayer contract and stream consensus statuses
+                            genlayerResult = await submitVerification(evidence, (statusState, txHash) => {
+                                emit("GenLayer Consensus", {
+                                    genlayer_status: statusState.toLowerCase(),
+                                    transactionHash: txHash
+                                });
+                            });
 
                             if (genlayerResult.status === GenLayerVerificationStatus.VERIFIED) {
                                 emit("GenLayer Verified", { genlayer_status: GenLayerVerificationStatus.VERIFIED });

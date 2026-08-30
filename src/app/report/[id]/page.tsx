@@ -183,8 +183,6 @@ export default function ReportPage(props: { params: Promise<{ id: string }> }) {
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <a href={`/api/export?id=${params.id}&format=json`} className={buttonVariants({ variant: 'outline', size: 'sm', className: 'shadow-sm font-semibold' })} download>export .json</a>
-                        <a href={`/api/export?id=${params.id}&format=md`} className={buttonVariants({ variant: 'default', size: 'sm', className: 'shadow-sm font-semibold px-6' })} download>export .md</a>
                     </div>
                 </div>
 

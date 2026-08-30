@@ -17,7 +17,8 @@ const VERIFICATION_TIMEOUT_MS = 120_000;
  * and wait for the consensus-verified result.
  */
 export async function submitVerification(
-    evidence: ProjectEvidence
+    evidence: ProjectEvidence,
+    onProgress?: (status: string, txHash?: string) => void
 ): Promise<GenLayerVerificationResponse> {
     const network = getNetwork();
     const contractAddress = getContractAddress();
@@ -50,19 +51,70 @@ export async function submitVerification(
             value: BigInt(0),
         });
 
-        // Wait for the transaction to be finalized by consensus
-        const receipt = await Promise.race([
-            client.waitForTransactionReceipt({
-                hash: transactionHash,
-                status: TransactionStatus.FINALIZED,
-            }),
-            new Promise<never>((_, reject) =>
-                setTimeout(() => reject(new Error('GenLayer verification timed out')), VERIFICATION_TIMEOUT_MS)
-            ),
-        ]);
+        if (onProgress) {
+            onProgress('SUBMITTED', transactionHash);
+        }
+
+        // Wait for the transaction to be finalized by consensus using polling
+        const startTime = Date.now();
+        let finalReceipt = null;
+
+        while (true) {
+            try {
+                const tx = await client.getTransaction({ hash: transactionHash });
+                const currentStatus = tx?.status;
+
+                let statusName = 'PENDING';
+                if (currentStatus !== undefined && currentStatus !== null) {
+                    if (typeof currentStatus === 'string') {
+                        statusName = currentStatus;
+                    } else if (typeof currentStatus === 'number') {
+                        const names = ['PENDING', 'PROPOSING', 'COMMITTING', 'REVEALING', 'ACCEPTED', 'FINALIZED', 'UNDETERMINED'];
+                        statusName = names[currentStatus] || `STATUS_${currentStatus}`;
+                    }
+                }
+
+                if (onProgress) {
+                    onProgress(statusName.toUpperCase(), transactionHash);
+                }
+
+                if (currentStatus === TransactionStatus.FINALIZED || statusName.toUpperCase() === 'FINALIZED') {
+                    // Try to get receipt when finalized
+                    try {
+                        finalReceipt = await client.getTransactionReceipt({ hash: transactionHash });
+                    } catch (e) {
+                        // ignore and it might fetch on next loop if race condition
+                    }
+                    if (finalReceipt) break;
+                }
+
+                if (statusName.toUpperCase() === 'UNDETERMINED') {
+                    throw new Error('Transaction reached UNDETERMINED consensus state.');
+                }
+            } catch (err) {
+                // If getTransaction throws (e.g. indexing delay), safely ignore and wait
+                // Unless we matched UNDETERMINED
+                if (err instanceof Error && err.message.includes('UNDETERMINED')) throw err;
+            }
+
+            if (Date.now() - startTime > VERIFICATION_TIMEOUT_MS) {
+                // Timeout reached, expose as pending instead of throwing a false failure
+                return {
+                    status: GenLayerVerificationStatus.PENDING,
+                    result: null,
+                    transactionHash: transactionHash as string,
+                    contractAddress,
+                    executionTimestamp: new Date().toISOString(),
+                    error: null,
+                    network,
+                };
+            }
+
+            await new Promise(r => setTimeout(r, 4000));
+        }
 
         // Check execution result
-        const execResult = (receipt as Record<string, unknown>).txExecutionResultName as string | undefined;
+        const execResult = (finalReceipt as Record<string, unknown>)?.txExecutionResultName as string | undefined;
 
         if (execResult === 'FINISHED_WITH_ERROR') {
             return {
