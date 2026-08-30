@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { submitVerification, fetchVerificationStatus } from '../contract';
 import { GenLayerVerificationStatus, ProjectEvidence } from '../types';

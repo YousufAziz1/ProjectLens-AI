@@ -57,7 +57,7 @@ export async function collectFromDocumentation(url: string): Promise<CollectorOu
                             if (absoluteUrl !== base && !links.includes(absoluteUrl) && !absoluteUrl.includes('#')) {
                                 links.push(absoluteUrl);
                             }
-                        } catch (e) { }
+                        } catch { }
                     }
                 });
 
@@ -82,13 +82,13 @@ export async function collectFromDocumentation(url: string): Promise<CollectorOu
                                 sub$('script, style, nav, footer, header, noscript, iframe').remove();
                                 return `\n\n--- PAGE: ${link} ---\n\n` + (sub$('main, article, .content').length > 0 ? sub$('main, article, .content').text() : sub$('body').text());
                             }
-                        } catch (e) { }
+                        } catch { }
                         return "";
                     }));
                     appendedText = pages.join('\n');
                 }
                 return appendedText;
-            } catch (e) {
+            } catch {
                 return "";
             }
         };

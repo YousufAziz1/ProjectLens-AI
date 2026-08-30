@@ -9,7 +9,7 @@ class PersistentStorage {
     private async ensureDir() {
         try {
             await fs.mkdir(DATA_DIR, { recursive: true });
-        } catch (e) {
+        } catch {
             // directory exists
         }
     }
@@ -23,7 +23,7 @@ class PersistentStorage {
         try {
             const file = await fs.readFile(path.join(DATA_DIR, `${id}.json`), 'utf-8');
             return JSON.parse(file);
-        } catch (error) {
+        } catch {
             return null;
         }
     }

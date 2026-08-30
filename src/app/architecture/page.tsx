@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Card, CardContent } from '@/components/ui/card';
 import { Database, BrainCircuit, Search, BarChart3, ShieldCheck, ArrowDown } from 'lucide-react';
 

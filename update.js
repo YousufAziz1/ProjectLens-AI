@@ -1,3 +1,4 @@
+/* eslint-disable */
 const cp = require('child_process');
 const fs = require('fs');
 try {

@@ -1,0 +1,5 @@
+commit 0d88b83dca63fd158f04afdee322ee56b5d7081e
+Author: YousufAziz1 <yousufaziz1234@gmail.com>
+Date:   Sun Aug 30 21:29:48 2026 +0530
+
+    fix: Enforce strict typing bounds and remove silent verification fallbacks

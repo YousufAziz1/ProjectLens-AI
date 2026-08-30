@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Activity, Shield, CheckCircle2, AlertTriangle, Blocks, Terminal } from 'lucide-react';

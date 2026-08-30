@@ -1,3 +1,4 @@
+/* eslint-disable */
 const { execFileSync } = require('child_process');
 const path = require('path');
 

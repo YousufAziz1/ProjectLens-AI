@@ -81,7 +81,7 @@ export async function fetchVerificationStatus(transactionHash: string): Promise<
         } else if (rawStatus === TransactionStatus.FINALIZED) {
             statusName = 'FINALIZED';
         } else if (rawStatus !== undefined) {
-            const entry = Object.entries(TransactionStatus).find(([_, val]) => val === rawStatus);
+            const entry = Object.entries(TransactionStatus).find(([, val]) => val === rawStatus);
             statusName = entry ? entry[0] : `STATUS_${rawStatus}`;
         }
 
@@ -121,7 +121,7 @@ export async function fetchVerificationStatus(transactionHash: string): Promise<
         let finalReceipt;
         try {
             finalReceipt = await client.getTransactionReceipt({ hash: transactionHash as `0x${string}` & { length: 66 } });
-        } catch (e) {
+        } catch {
             // Receipt might lag slightly behind the getTransaction consensus mapping
             return {
                 status: GenLayerVerificationStatus.EXECUTING,

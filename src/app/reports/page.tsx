@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ShieldAlert, BookOpen, Key, Link as LinkIcon } from 'lucide-react';

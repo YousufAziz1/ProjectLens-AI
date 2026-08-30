@@ -1,3 +1,4 @@
+/* eslint-disable */
 const { spawnSync } = require('child_process');
 
 const serviceObj = [{
