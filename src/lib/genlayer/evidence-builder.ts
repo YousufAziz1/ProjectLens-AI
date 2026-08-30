@@ -57,8 +57,7 @@ export function buildProjectEvidence(
         repository_score: categoryScores.repository || 0,
         documentation_score: categoryScores.documentation || 0,
         transparency_score: categoryScores.transparency || 0,
-        // @ts-ignore - score exists on the compiled output before we typed it strictly, using fallback
-        overall_score: (report as any).score || (report.categoryScores ? Math.round((categoryScores.security * 0.4) + (categoryScores.repository * 0.25) + (categoryScores.documentation * 0.2) + (categoryScores.transparency * 0.1) + (categoryScores.tokenomics * 0.05)) : 0),
+        overall_score: Math.round((categoryScores.security * 0.4) + (categoryScores.repository * 0.25) + (categoryScores.documentation * 0.2) + (categoryScores.transparency * 0.1) + (categoryScores.tokenomics * 0.05)),
     };
 
     return {
