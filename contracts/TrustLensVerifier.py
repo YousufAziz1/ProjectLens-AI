@@ -180,8 +180,4 @@ class TrustLensVerifier(gl.Contract):
                              "Falling back to deterministic pipeline scores.",
             }
 
-        # Add verification timestamp
-        import datetime
-        result["verification_timestamp"] = datetime.datetime.utcnow().isoformat() + "Z"
-
         return result
