@@ -19,8 +19,8 @@ class TrustLensVerifier(gl.Contract):
     """
 
     def __init__(self):
-        self.verifications: dict[str, str] = {}
-        self.verification_count: int = 0
+        self.verifications: TreeMap[str, str] = TreeMap()
+        self.verification_count: u32 = 0
 
     @gl.public.write
     def verify_project(self, evidence_json: str) -> None:
@@ -74,14 +74,14 @@ class TrustLensVerifier(gl.Contract):
         return self.verifications.get(verification_id, "{}")
 
     @gl.public.view
-    def get_verification_count(self) -> int:
+    def get_verification_count(self) -> u32:
         """Return the total number of verifications performed."""
         return self.verification_count
 
     def _build_evaluation_prompt(
         self, target_url, github_url, repo_metrics,
         security_findings, doc_findings, det_scores, evidence_count
-    ) -> str:
+    ):
         """Build a structured evaluation prompt from collected evidence."""
 
         prompt_parts = [
@@ -158,7 +158,7 @@ class TrustLensVerifier(gl.Contract):
 
         return "\n".join(prompt_parts)
 
-    def _parse_evaluation(self, evaluation: str, det_scores: dict, evidence_count: int) -> dict:
+    def _parse_evaluation(self, evaluation, det_scores, evidence_count):
         """Parse the LLM evaluation and merge with deterministic data."""
         try:
             # Strip any markdown formatting
