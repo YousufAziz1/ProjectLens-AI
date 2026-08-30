@@ -9,6 +9,20 @@ export async function collectFromDocumentation(url: string): Promise<CollectorOu
         const response = await fetch(url, { signal: AbortSignal.timeout(10000) });
 
         if (!response.ok) {
+            if (response.status === 429) {
+                return {
+                    source: 'documentation',
+                    status: 'failed',
+                    collectedAt: new Date().toISOString(),
+                    metadata: { url, fetchTimeMs: Date.now() - startTime },
+                    data: null,
+                    error: {
+                        code: 'API_RATE_LIMIT',
+                        message: 'API limit reached. Please try again later.',
+                        provider: 'Documentation'
+                    }
+                };
+            }
             throw new Error(`Failed to fetch documentation: ${response.status} ${response.statusText}`);
         }
 

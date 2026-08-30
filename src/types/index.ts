@@ -21,6 +21,12 @@ export interface GitHubData {
     recentCommits: GitHubCommit[];
 }
 
+export interface AppError {
+    code: string;
+    message: string;
+    provider?: string;
+}
+
 export interface CollectorMetadata {
     url?: string;
     fetchTimeMs?: number;
@@ -35,7 +41,7 @@ export interface CollectorOutput<T = unknown> {
     collectedAt: string; // ISO 8601 timestamp
     metadata: CollectorMetadata;
     data: T | null;
-    error: string | null;
+    error: string | AppError | null;
 }
 
 export interface UnifiedCollectorInput {

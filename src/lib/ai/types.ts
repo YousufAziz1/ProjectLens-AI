@@ -29,6 +29,8 @@ export class AiGenerationError extends Error {
     }
 }
 
+import { AppError } from '@/types';
+
 // Execution Logging
 export interface AiExecutionLog {
     executionId: string;
@@ -39,7 +41,7 @@ export interface AiExecutionLog {
     inputTokens: number;
     outputTokens: number;
     success: boolean;
-    failureReason?: string;
+    failureReason?: string | AppError;
 }
 
 // Provider Interface (Abstractions for future support of OpenAI, Claude, etc.)

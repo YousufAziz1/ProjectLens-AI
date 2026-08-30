@@ -1,4 +1,4 @@
-// @ts-ignore
+/// <reference types="vitest" />
 import { describe, it, expect } from 'vitest';
 import { buildProjectEvidence } from '../evidence-builder';
 import type { FinalReport } from '../../ai/schemas';

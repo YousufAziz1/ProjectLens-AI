@@ -62,6 +62,18 @@ export abstract class BaseAgent<Input = unknown, OutputSchema extends z.ZodTypeA
             } catch (error) {
                 const isTimeout = error instanceof AiTimeoutError;
                 if (attempt === retries || !isTimeout) {
+                    const errStr = error instanceof Error ? error.message : String(error);
+                    const lowerStr = errStr.toLowerCase();
+                    let failureReason: string | import('@/types').AppError = errStr;
+
+                    if (lowerStr.includes('resource exhausted') || lowerStr.includes('resource_exhausted') || lowerStr.includes('rate limit') || lowerStr.includes('rate_limit') || lowerStr.includes('429') || lowerStr.includes('quota exceeded') || lowerStr.includes('too many requests')) {
+                        failureReason = {
+                            code: 'API_RATE_LIMIT',
+                            message: 'Gemini API limit reached. Please try again later.',
+                            provider: 'Gemini'
+                        };
+                    }
+
                     // If we exhausted retries or the error isn't retry-able (e.g., Validation error)
                     const log: AiExecutionLog = {
                         executionId: context.executionId,
@@ -72,7 +84,7 @@ export abstract class BaseAgent<Input = unknown, OutputSchema extends z.ZodTypeA
                         inputTokens: 0,
                         outputTokens: 0,
                         success: false,
-                        failureReason: error instanceof Error ? error.message : String(error)
+                        failureReason
                     };
 
                     return { data: null, log };

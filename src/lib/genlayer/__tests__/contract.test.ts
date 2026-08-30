@@ -1,12 +1,13 @@
-// @ts-ignore
+/// <reference types="vitest" />
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { submitVerification, fetchVerificationStatus } from '../contract';
 import { GenLayerVerificationStatus, ProjectEvidence } from '../types';
 
-let mockTxStatus: number | undefined = 0;
+let mockTxStatus: string | undefined = 'PENDING';
 const mockWriteContract = vi.fn();
 const mockGetTransaction = vi.fn();
 const mockGetTransactionReceipt = vi.fn();
+const mockReadContract = vi.fn();
 
 // Mock GenLayer Client Config
 vi.mock('../client', () => ({
@@ -15,14 +16,14 @@ vi.mock('../client', () => ({
     isGenLayerConfigured: () => true,
     createGenLayerClient: () => ({
         client: {
-            writeContract: (...args: any[]) => mockWriteContract(...args),
-            getTransaction: (...args: any[]) => mockGetTransaction(...args),
-            getTransactionReceipt: (...args: any[]) => mockGetTransactionReceipt(...args)
+            writeContract: (...args: unknown[]) => mockWriteContract(...args),
+            getTransaction: (...args: unknown[]) => mockGetTransaction(...args),
+            getTransactionReceipt: (...args: unknown[]) => mockGetTransactionReceipt(...args)
         }
     }),
     createGenLayerReadClient: () => ({
         client: {
-            readContract: vi.fn().mockResolvedValue(JSON.stringify({ trust_score: 95, risk_level: 'low', decision: 'recommended' }))
+            readContract: (...args: unknown[]) => mockReadContract(...args)
         }
     })
 }));
@@ -46,6 +47,7 @@ describe('GenLayer Stateless Submissions', () => {
         mockWriteContract.mockResolvedValue('0xabc');
         mockGetTransaction.mockImplementation(async () => ({ status: mockTxStatus }));
         mockGetTransactionReceipt.mockResolvedValue({ txExecutionResultName: 'SUCCESS' });
+        mockReadContract.mockResolvedValue(JSON.stringify({ trust_score: 95, risk_level: 'low', decision: 'recommended', rationale: 'default' }));
     });
 
     it('submitVerification should return PENDING implicitly with a valid hash', async () => {
@@ -54,21 +56,21 @@ describe('GenLayer Stateless Submissions', () => {
         expect(result.transactionHash).toBe('0xabc');
     });
 
-    it('fetchVerificationStatus should NOT treat ACCEPTED (5) as FINALIZED', async () => {
-        mockTxStatus = 5; // ACCEPTED
+    it('fetchVerificationStatus should NOT treat ACCEPTED as FINALIZED', async () => {
+        mockTxStatus = 'ACCEPTED';
         const result = await fetchVerificationStatus('0xabc');
         expect(result.status).toBe(GenLayerVerificationStatus.EXECUTING);
     });
 
-    it('fetchVerificationStatus should return VERIFIED when FINALIZED (7) succeeds', async () => {
-        mockTxStatus = 7; // FINALIZED
+    it('fetchVerificationStatus should return VERIFIED when FINALIZED succeeds', async () => {
+        mockTxStatus = 'FINALIZED';
         const result = await fetchVerificationStatus('0xabc');
         expect(result.status).toBe(GenLayerVerificationStatus.VERIFIED);
         expect(result.result?.trust_score).toBe(95);
     });
 
-    it('fetchVerificationStatus should return FAILED if FINALIZED (7) executes with FINISHED_WITH_ERROR', async () => {
-        mockTxStatus = 7; // FINALIZED
+    it('fetchVerificationStatus should return FAILED if FINALIZED executes with FINISHED_WITH_ERROR', async () => {
+        mockTxStatus = 'FINALIZED';
         mockGetTransactionReceipt.mockResolvedValueOnce({ txExecutionResultName: 'FINISHED_WITH_ERROR' });
 
         const result = await fetchVerificationStatus('0xabc');
@@ -82,5 +84,38 @@ describe('GenLayer Stateless Submissions', () => {
 
         const result = await fetchVerificationStatus('0xabc');
         expect(result.status).toBe(GenLayerVerificationStatus.PENDING);
+    });
+
+    it('fetchVerificationStatus should return FAILED for malformed JSON results (invalid string)', async () => {
+        mockTxStatus = 'FINALIZED';
+        mockGetTransactionReceipt.mockResolvedValueOnce({ txExecutionResultName: 'SUCCESS' });
+        mockReadContract.mockResolvedValueOnce('INVALID JSON STR');
+
+        const result = await fetchVerificationStatus('0xabc');
+        expect(result.status).toBe(GenLayerVerificationStatus.FAILED);
+        expect(result.error).toContain('CONTRACT_RESULT_INVALID');
+    });
+
+    it('fetchVerificationStatus should return FAILED for empty JSON object {}', async () => {
+        mockTxStatus = 'FINALIZED';
+        mockGetTransactionReceipt.mockResolvedValueOnce({ txExecutionResultName: 'SUCCESS' });
+        mockReadContract.mockResolvedValueOnce(JSON.stringify({}));
+
+        const result = await fetchVerificationStatus('0xabc');
+        expect(result.status).toBe(GenLayerVerificationStatus.FAILED);
+        expect(result.error).toContain('CONTRACT_RESULT_INVALID');
+    });
+
+    it('fetchVerificationStatus should return FAILED for missing essential parsed properties', async () => {
+        mockTxStatus = 'FINALIZED';
+        mockGetTransactionReceipt.mockResolvedValueOnce({ txExecutionResultName: 'SUCCESS' });
+        mockReadContract.mockResolvedValueOnce(JSON.stringify({
+            trust_score: 95,
+            // MISSING risk_level, decision, rationale
+        }));
+
+        const result = await fetchVerificationStatus('0xabc');
+        expect(result.status).toBe(GenLayerVerificationStatus.FAILED);
+        expect(result.error).toContain('CONTRACT_RESULT_INVALID');
     });
 });

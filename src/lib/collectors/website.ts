@@ -9,6 +9,20 @@ export async function collectFromWebsite(url: string): Promise<CollectorOutput<s
         const response = await fetch(url, { signal: AbortSignal.timeout(10000) });
 
         if (!response.ok) {
+            if (response.status === 429) {
+                return {
+                    source: 'website',
+                    status: 'failed',
+                    collectedAt: new Date().toISOString(),
+                    metadata: { url, fetchTimeMs: Date.now() - startTime },
+                    data: null,
+                    error: {
+                        code: 'API_RATE_LIMIT',
+                        message: 'API limit reached. Please try again later.',
+                        provider: 'Website'
+                    }
+                };
+            }
             throw new Error(`Failed to fetch website: ${response.status} ${response.statusText}`);
         }
 

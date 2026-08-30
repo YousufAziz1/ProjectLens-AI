@@ -58,6 +58,16 @@ export async function POST(request: Request) {
                     emit("Collecting project data");
                     const collectedData = await runUnifiedCollection(id, input);
 
+                    if (collectedData.github?.status === 'failed' && typeof collectedData.github.error === 'object' && collectedData.github.error?.code === 'API_RATE_LIMIT') {
+                        emit("⚠ GitHub API — API limit reached");
+                    }
+                    if (collectedData.documentation?.status === 'failed' && typeof collectedData.documentation.error === 'object' && collectedData.documentation.error?.code === 'API_RATE_LIMIT') {
+                        emit("⚠ Documentation API — API limit reached");
+                    }
+                    if (collectedData.website?.status === 'failed' && typeof collectedData.website.error === 'object' && collectedData.website.error?.code === 'API_RATE_LIMIT') {
+                        emit("⚠ Website API — API limit reached");
+                    }
+
                     emit("Parsing documentation");
 
                     emit("Running Whitepaper Agent");
@@ -71,6 +81,11 @@ export async function POST(request: Request) {
                         startedAt: new Date().toISOString(),
                         previousAgentResults: {}
                     });
+
+                    const limitAgent = orchestratorResult.results.find(r => r.status === 'failed' && typeof r.error === 'object' && r.error?.code === 'API_RATE_LIMIT');
+                    if (limitAgent) {
+                        emit("⚠ Security API — API limit reached");
+                    }
 
                     emit("Normalizing results");
                     const normalizer = new ResultNormalizer();

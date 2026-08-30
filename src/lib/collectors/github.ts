@@ -46,7 +46,18 @@ export async function collectFromGitHub(url: string): Promise<CollectorOutput<Gi
         // 1. Base Repo Info
         const repoRes = await fetch(baseUrl, { headers, signal: AbortSignal.timeout(10000) });
         if (repoRes.status === 403 || repoRes.status === 429) {
-            throw new Error('GitHub API rate limit exceeded');
+            return {
+                source: 'github',
+                status: 'failed',
+                collectedAt: new Date().toISOString(),
+                metadata: { ...metadata, fetchTimeMs: Date.now() - startTime },
+                data: null,
+                error: {
+                    code: 'API_RATE_LIMIT',
+                    message: 'GitHub API rate limit reached. Please try again later.',
+                    provider: 'GitHub'
+                },
+            };
         }
         if (!repoRes.ok) throw new Error(`Repository not found (${repoRes.status})`);
 

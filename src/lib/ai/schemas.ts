@@ -42,7 +42,7 @@ export type SourceReference = z.infer<typeof SourceReferenceSchema>;
 
 export const AgentResultSchema = z.object({
     status: z.enum(['success', 'failed']).describe('Whether the agent successfully completed the analysis'),
-    error: z.string().nullable().optional().describe('Typed error message if status is failed'),
+    error: z.any().nullable().optional().describe('Typed error message if status is failed'),
     summary: z.string().nullable().describe('High-level summary of the agent\'s findings'),
     findings: z.array(FindingSchema).nullable().describe('List of specific findings discovered by the agent'),
     evidence: z.array(EvidenceSchema).nullable().describe('Evidentiary snippets backing up the findings'),

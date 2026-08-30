@@ -72,17 +72,17 @@ export async function fetchVerificationStatus(transactionHash: string): Promise<
 
     try {
         const { client } = createGenLayerClient();
-        const tx = await client.getTransaction({ hash: transactionHash as any });
-        let rawStatus = tx?.status as unknown as number | undefined;
+        const tx = await client.getTransaction({ hash: transactionHash as `0x${string}` & { length: 66 } });
+        let rawStatus = tx?.status;
 
         let statusName = 'PENDING';
-        if (rawStatus === 5 /* ACCEPTED */) {
+        if (rawStatus === TransactionStatus.ACCEPTED) {
             statusName = 'ACCEPTED';
-        } else if (rawStatus === 7 /* FINALIZED */) {
+        } else if (rawStatus === TransactionStatus.FINALIZED) {
             statusName = 'FINALIZED';
         } else if (rawStatus !== undefined) {
-            const names = ['PENDING', 'PROPOSING', 'COMMITTING', 'REVEALING', 'ACCEPTED', 'FINALIZED', 'UNDETERMINED'];
-            statusName = names[rawStatus] || `STATUS_${rawStatus}`;
+            const entry = Object.entries(TransactionStatus).find(([_, val]) => val === rawStatus);
+            statusName = entry ? entry[0] : `STATUS_${rawStatus}`;
         }
 
         if (rawStatus === undefined) {
@@ -101,8 +101,8 @@ export async function fetchVerificationStatus(transactionHash: string): Promise<
             };
         }
 
-        // Must explicitly wait for actual FINALIZED (7)
-        if (rawStatus !== 7 && statusName !== 'FINALIZED') {
+        // Must explicitly wait for actual FINALIZED
+        if (rawStatus !== TransactionStatus.FINALIZED && statusName !== 'FINALIZED') {
             return {
                 status: GenLayerVerificationStatus.EXECUTING, // generic in-progress mapped status
                 result: null,
@@ -118,9 +118,9 @@ export async function fetchVerificationStatus(transactionHash: string): Promise<
         }
 
         // If we reached FINALIZED (7), fetch receipt and inspect execution outcome
-        let finalReceipt = null;
+        let finalReceipt;
         try {
-            finalReceipt = await client.getTransactionReceipt({ hash: transactionHash as any });
+            finalReceipt = await client.getTransactionReceipt({ hash: transactionHash as `0x${string}` & { length: 66 } });
         } catch (e) {
             // Receipt might lag slightly behind the getTransaction consensus mapping
             return {
@@ -134,7 +134,7 @@ export async function fetchVerificationStatus(transactionHash: string): Promise<
             };
         }
 
-        const execResult = (finalReceipt as Record<string, unknown>)?.txExecutionResultName as string | undefined;
+        const execResult = Reflect.get(finalReceipt || {}, 'txExecutionResultName');
 
         if (execResult === 'FINISHED_WITH_ERROR') {
             return {
@@ -167,6 +167,20 @@ export async function fetchVerificationStatus(transactionHash: string): Promise<
         };
 
     } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+
+        if (errorMsg.includes('CONTRACT_RESULT_INVALID')) {
+            return {
+                status: GenLayerVerificationStatus.FAILED,
+                result: null,
+                transactionHash,
+                contractAddress,
+                executionTimestamp: new Date().toISOString(),
+                error: errorMsg,
+                network,
+            };
+        }
+
         // If indexing temporarily fails or network blips, return pending so frontend continues polling
         return {
             status: GenLayerVerificationStatus.PENDING,
@@ -188,19 +202,32 @@ function parseVerificationResult(rawResult: unknown): VerificationResult {
     let parsed: Record<string, unknown>;
 
     if (typeof rawResult === 'string') {
+        if (!rawResult || rawResult.trim() === '{}') {
+            throw new Error('CONTRACT_RESULT_INVALID: GenLayer finalized the transaction, but the verification result was empty or invalid.');
+        }
         try {
             parsed = JSON.parse(rawResult);
         } catch {
-            // If parsing fails, create a default result
-            return createDefaultResult('Failed to parse contract response');
+            throw new Error('CONTRACT_RESULT_INVALID: GenLayer finalized the transaction, but the verification result was empty or invalid.');
         }
     } else if (typeof rawResult === 'object' && rawResult !== null) {
         parsed = rawResult as Record<string, unknown>;
+        if (Object.keys(parsed).length === 0) {
+            throw new Error('CONTRACT_RESULT_INVALID: GenLayer finalized the transaction, but the verification result was empty or invalid.');
+        }
     } else {
-        return createDefaultResult('Unexpected contract response format');
+        throw new Error('CONTRACT_RESULT_INVALID: GenLayer finalized the transaction, but the verification result was empty or invalid.');
     }
 
-    // Validate and extract fields with safe defaults
+    if (
+        parsed.trust_score === undefined ||
+        parsed.decision === undefined ||
+        parsed.rationale === undefined
+    ) {
+        throw new Error('CONTRACT_RESULT_INVALID: GenLayer finalized the transaction, but the verification result was empty or invalid.');
+    }
+
+    // Validate and extract fields with safe defaults for non-critical formatting
     return {
         trust_score: clampScore(Number(parsed.trust_score) || 0),
         risk_level: validateRiskLevel(String(parsed.risk_level || 'medium')),
@@ -209,7 +236,7 @@ function parseVerificationResult(rawResult: unknown): VerificationResult {
             ? parsed.key_findings.map(String)
             : [],
         evidence_quality: validateEvidenceQuality(String(parsed.evidence_quality || 'partial')),
-        rationale: String(parsed.rationale || 'No rationale provided by contract.'),
+        rationale: String(parsed.rationale),
         verification_timestamp: String(parsed.verification_timestamp || new Date().toISOString()),
     };
 }
@@ -239,14 +266,4 @@ function validateEvidenceQuality(quality: string): VerificationResult['evidence_
         : 'partial';
 }
 
-function createDefaultResult(rationale: string): VerificationResult {
-    return {
-        trust_score: 0,
-        risk_level: 'medium',
-        decision: 'caution',
-        key_findings: [],
-        evidence_quality: 'insufficient',
-        rationale,
-        verification_timestamp: new Date().toISOString(),
-    };
-}
+
