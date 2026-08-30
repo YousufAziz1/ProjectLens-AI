@@ -18,9 +18,12 @@ class TrustLensVerifier(gl.Contract):
     no single party can manipulate the trust assessment.
     """
 
+    verifications: TreeMap[str, str]
+    verification_count: u32
+
     def __init__(self):
-        self.verifications: TreeMap[str, str] = TreeMap()
-        self.verification_count: u32 = 0
+        self.verifications = TreeMap()
+        self.verification_count = 0
 
     @gl.public.write
     def verify_project(self, evidence_json: str) -> None:
