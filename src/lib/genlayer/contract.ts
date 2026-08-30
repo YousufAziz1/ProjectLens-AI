@@ -9,8 +9,8 @@ import type { ProjectEvidence, VerificationResult, GenLayerVerificationResponse 
 import { GenLayerVerificationStatus } from './types';
 import { TransactionStatus } from 'genlayer-js/types';
 
-/** Timeout for waiting on GenLayer transaction finalization (30 seconds) */
-const VERIFICATION_TIMEOUT_MS = 30_000;
+/** Timeout for waiting on GenLayer transaction finalization (120 seconds) */
+const VERIFICATION_TIMEOUT_MS = 120_000;
 
 /**
  * Submit project evidence to the GenLayer TrustLensVerifier contract
