@@ -352,9 +352,9 @@ export default function ReportPage(props: { params: Promise<{ id: string }> }) {
                                 TrustLens-AI
                             </div>
                             <p className="text-sm font-medium text-foreground/80 mt-1">
-                                OKX.AI Agent Service Provider
+                                GenLayer Validator Node
                                 <span className="mx-2 text-muted-foreground text-xs">•</span>
-                                ASP Identity: <span className="font-mono text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded shadow-sm">#9422</span>
+                                GenVM Network: <span className="font-mono text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded shadow-sm">studionet</span>
                             </p>
                         </div>
                         <div className="flex flex-col gap-2 md:items-end w-full md:w-auto mt-2 md:mt-0">

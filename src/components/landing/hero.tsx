@@ -22,7 +22,7 @@ export function Hero() {
                             Live Agent Network
                         </span>
                         <span className="inline-flex items-center rounded-full border border-border bg-muted/80 backdrop-blur px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
-                            OKX.AI • ASP #9422
+                            GenLayer Network • Smart Contracts
                         </span>
                     </div>
 

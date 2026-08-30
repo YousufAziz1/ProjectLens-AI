@@ -115,7 +115,7 @@ export default function DashboardPage() {
                                         <h3 className="font-bold text-base">GitHub Agent</h3>
                                         <span className="flex h-2 w-2 rounded-full bg-blue-500 animate-pulse ring-2 ring-blue-500/20"></span>
                                     </div>
-                                    <p className="text-xs text-muted-foreground font-mono">ID: AGT-9422-GH</p>
+                                    <p className="text-xs text-muted-foreground font-mono">ID: GEN-GH-1</p>
                                 </div>
                                 <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider bg-muted/30 text-blue-500 border-blue-500/30">Active</Badge>
                             </div>
@@ -133,7 +133,7 @@ export default function DashboardPage() {
                                         <h3 className="font-bold text-base">Documentation Agent</h3>
                                         <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse ring-2 ring-emerald-500/20"></span>
                                     </div>
-                                    <p className="text-xs text-muted-foreground font-mono">ID: AGT-9422-DC</p>
+                                    <p className="text-xs text-muted-foreground font-mono">ID: GEN-DC-1</p>
                                 </div>
                                 <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider bg-muted/30 text-emerald-500 border-emerald-500/30">Active</Badge>
                             </div>
@@ -151,7 +151,7 @@ export default function DashboardPage() {
                                         <h3 className="font-bold text-base">Security Agent</h3>
                                         <span className="flex h-2 w-2 rounded-full bg-yellow-500 animate-pulse ring-2 ring-yellow-500/20"></span>
                                     </div>
-                                    <p className="text-xs text-muted-foreground font-mono">ID: AGT-9422-SC</p>
+                                    <p className="text-xs text-muted-foreground font-mono">ID: GEN-SC-1</p>
                                 </div>
                                 <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider bg-muted/30 text-yellow-500 border-yellow-500/30">Active</Badge>
                             </div>

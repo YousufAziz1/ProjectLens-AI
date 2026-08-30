@@ -62,7 +62,7 @@ export function Footer() {
 
                 <div className="mt-16 border-t border-border/40 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-xs text-muted-foreground font-medium text-center md:text-left">
-                        © {new Date().getFullYear()} TrustLens-AI. All rights reserved. ASP #9422.
+                        © {new Date().getFullYear()} TrustLens-AI. All rights reserved.
                     </p>
                     <p className="text-[10px] text-muted-foreground/60 uppercase tracking-widest text-center md:text-right">
                         For research purposes only. Not financial advice.
