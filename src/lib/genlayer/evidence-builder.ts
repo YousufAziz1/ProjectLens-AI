@@ -7,6 +7,7 @@ import type { ProjectEvidence } from './types';
 interface ReportData {
     projectName?: string;
     overallScore?: number;
+    score?: number;
     categoryScores?: Record<string, number>;
     findings?: Array<{
         severity?: string;
@@ -88,7 +89,7 @@ export function buildProjectEvidence(
         repository_score: categoryScores.repository || 0,
         documentation_score: categoryScores.documentation || 0,
         transparency_score: categoryScores.transparency || 0,
-        overall_score: report.overallScore || 0,
+        overall_score: (report.overallScore as number) || (report.score as number) || 0,
     };
 
     return {

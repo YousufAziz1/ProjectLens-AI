@@ -1,0 +1,289 @@
+{
+  "projectName": "trustlens.vercel.app",
+  "generatedAt": "2026-08-30T10:27:43.692Z",
+  "sections": [
+    {
+      "title": "Executive Summary",
+      "content": "TrustLens-AI executed a mathematically rigorous deterministic Web3 Security audit on trustlens.vercel.app.\n\n**Audit Matrix**:\n- **Security Integrity**: 93/100 (0 severe risks identified)\n- **Repository Health**: 75/100 (20 recent commits from 1 contributors)\n- **Documentation Coverage**: 0/100 (2 structural sections missing)\n- **Transparency Base**: 30/100 (1 independent data sources cryptographically verified)\n- **Tokenomics Model**: Not Discovered or Unavailable\n\n**Overall Weighted Protocol Score**: **69/100** points mapped across 5 distinct verification vectors.",
+      "score": 69
+    }
+  ],
+  "strengths": [
+    "[INFO] Verified OSI License: MIT License",
+    "Comprehensive Architectural & Setup Documentation",
+    "Permissive Open Source Licensing",
+    "Active Recent Commits"
+  ],
+  "weaknesses": [
+    "[LOW] No Formal Software Releases",
+    "[HIGH] Single Point of Failure (Only 1 Active Contributor)",
+    "[MEDIUM] Missing 2 Fundamental Protocol Architecture Documents",
+    "[HIGH] No Verified Tokenomics Structure Or Smart Contract Logic",
+    "[CRITICAL] Information Symmetry Failure (Only 1 Valid Audit Sources)",
+    "Single Contributor Risk [MEDIUM]",
+    "Zero Tagged Releases and Low Community Traction [LOW]"
+  ],
+  "missingInformation": [
+    "Unable to verify core structural architecture via explicit documentation",
+    "Tokenomics logic undiscoverable or explicitly missing",
+    "Insufficient parallel intelligence sources for consensus validation"
+  ],
+  "evidence": [
+    {
+      "id": "ev_01",
+      "claimId": "fnd_01",
+      "source": "https://github.com/YousufAziz1/TrustLens-AI",
+      "sourceType": "github",
+      "snippet": "contributorsCount: 1",
+      "confidence": "high",
+      "agentName": "GitHub Analyst Agent",
+      "findingTitle": "Single Contributor Risk",
+      "findingSeverity": "medium",
+      "findingDescription": "The repository lists 1 total contributor (YousufAziz1), representing high centralization and potential key-person dependency for development and maintenance."
+    },
+    {
+      "id": "ev_02",
+      "claimId": "fnd_02",
+      "source": "https://github.com/YousufAziz1/TrustLens-AI",
+      "sourceType": "github",
+      "snippet": "stars: 0, forks: 0, releases: 0",
+      "confidence": "high",
+      "agentName": "GitHub Analyst Agent",
+      "findingTitle": "Zero Tagged Releases and Low Community Traction",
+      "findingSeverity": "low",
+      "findingDescription": "The repository currently has 0 tagged releases, 0 stars, and 0 forks, indicating early stage deployment or low external ecosystem adoption."
+    },
+    {
+      "id": "ev_03",
+      "claimId": "fnd_03",
+      "source": "https://github.com/YousufAziz1/TrustLens-AI/blob/main/README.md",
+      "sourceType": "github",
+      "snippet": "## Overview, ## Architecture & AI Multi-Agent Pipeline, ## Installation & Local Development, ## Technology Stack",
+      "confidence": "high",
+      "agentName": "GitHub Analyst Agent",
+      "findingTitle": "Comprehensive Architectural & Setup Documentation",
+      "findingSeverity": "info",
+      "findingDescription": "The README contains detailed technical explanations, Mermaid workflow diagrams, installation guides, and GenLayer consensus contract architecture breakdowns."
+    },
+    {
+      "id": "ev_04",
+      "claimId": "fnd_04",
+      "source": "https://github.com/YousufAziz1/TrustLens-AI",
+      "sourceType": "github",
+      "snippet": "license: MIT License",
+      "confidence": "high",
+      "agentName": "GitHub Analyst Agent",
+      "findingTitle": "Permissive Open Source Licensing",
+      "findingSeverity": "info",
+      "findingDescription": "The repository is licensed under the standard MIT License, providing clear legal terms for software usage and modification."
+    },
+    {
+      "id": "ev_05",
+      "claimId": "fnd_05",
+      "source": "https://github.com/YousufAziz1/TrustLens-AI/commits",
+      "sourceType": "github",
+      "snippet": "lastCommitDate: 2026-08-30T10:16:23Z, sha: 99ff6b9fee206a1d6ba3db031f1429824378ca6b, message: fix(genlayer): increase contract polling timeout to 120s",
+      "confidence": "high",
+      "agentName": "GitHub Analyst Agent",
+      "findingTitle": "Active Recent Commits",
+      "findingSeverity": "info",
+      "findingDescription": "Recent commit history shows ongoing engineering work up to August 30, 2026, focusing on GenLayer smart contract integration and serverless Vercel deployment hotfixes."
+    }
+  ],
+  "githubData": {
+    "owner": "YousufAziz1",
+    "repo": "TrustLens-AI",
+    "name": "TrustLens-AI",
+    "description": "",
+    "readme": "<div align=\"center\">\n  <img src=\"https://assets.objkt.media/file/assets-003/QmeSjSinHgABtuYtwN8hHpsq1pALN3Qv4K5YgK5y2N8h2t/artifact\" width=\"120\" height=\"120\" alt=\"TrustLens Logo\">\n  <h1>TrustLens (Powered by TrustLens) 🔍</h1>\n  <p><b>A GenLayer Web3 Due Diligence Integration</b></p>\n  <p>An autonomous Intelligence pipeline that verifies Web3 project risk through GenLayer's AI-validated Intelligent Contracts.</p>\n</div>\n\n<p align=\"center\">\n  <img src=\"https://img.shields.io/badge/Framework-Next.js_16-black?style=flat-square&logo=next.js\" />\n  <img src=\"https://img.shields.io/badge/Consensus-GenLayer-purple?style=flat-square\" />\n  <img src=\"https://img.shields.io/badge/AI-Gemini_1.5_Flash-blue?style=flat-square&logo=google\" />\n  <img src=\"https://img.shields.io/badge/Language-TypeScript-blue?style=flat-square&logo=typescript\" />\n  <img src=\"https://img.shields.io/badge/Deployment-Vercel-black?style=flat-square&logo=vercel\" />\n</p>\n\n---\n\n## ⚡ Overview\n**TrustLens** is a fully automated, verifiable Due Diligence Pipeline constructed for the GenLayer ecosystem. It transforms hours of manual smart contract auditing, web scraping, and protocol whitepaper digestion into an instantaneous analytical pipeline that is **verified on-chain through GenLayer's Optimistic Democracy**.\n\nTraditional AI screening tools rely on a single, centralized LLM inference to judge a project, which can easily hallucinate or be manipulated. **TrustLens solves this by relying on GenLayer consensus:** multiple independent AI validators run the evaluation natively in the Intelligent Contract, ensuring no single entity controls the risk assessment.\n\n## 🔴 The Problem Statement\nRetail investors consistently lose millions of dollars into malicious, hollow, or functionally broken Web3 ecosystems. Evaluating modern protocols requires cross-referencing GitHub commits, checking smart contract security, and verifying deep Documentation layers. Centralized AI tools fail because you have to 'blindly trust' the platform's backend prompt wrapper.\n\n## 🟢 The Solution (GenLayer Architecture)\nTrustLens leverages the **TrustLens-AI collector pipeline** to autonomously scour a target protocol's GitHub, documentation, and architecture. \n\nInstead of terminating at a centralized score, it packages this evidence matrix and forwards it directly to the **TrustLens GenLayer Intelligent Contract**. The GenLayer validators independently analyze the evidence via `gl.eq_principle` non-deterministic execution, achieving on-chain consensus on the project's exact risk level, and outputting an immutable transaction ledger of the verification.\n\n---\n\n## ✨ Key Features\n- **GenLayer On-Chain Verification:** Live integration with the `genlayer-js` SDK and GenVM Python Intelligent Contracts to replace centralized scoring with Optimistic Democracy.\n- **Deterministic AI Collectors:** Advanced web crawlers and AST parsers map the project's actual infrastructure before it even reaches the contract.\n- **Server-Sent Event Streaming (SSE):** Users interact with a stunning real-time CLI terminal emulator directly on the dashboard reflecting every collection state, ending dynamically when the GenLayer validators finalize consensus.\n- **Evidence Cross-Linking:** Every Security 'Finding' provides raw, clickable evidence directly mapped to the source material.\n\n---\n\n## 🧠 Architecture & AI Multi-Agent Pipeline\n\n```mermaid\nflowchart TD\n    A[User enters Web3 project URL] --> B[TrustLens Frontend]\n    B --> C[\"/api/analyze — SSE Pipeline\"]\n    C --> D[\"Evidence Collection\\n(GitHub, Docs, Website)\"]\n    D --> E[\"AI Agent Analysis\\n(Gemini 1.5 Flash)\"]\n    E --> F[\"Deterministic Evidence Compiler\\n(MasterReportAgent)\"]\n    F --> G[\"GenLayer Intelligent Contract\\n(TrustLensVerifier.py)\"]\n    G --> H{\"GenLayer Consensus\\n(Optimistic Democracy)\"}\n    H -->|Verified| I[\"Final Verified Result\\n+ Transaction Hash\"]\n    H -->|Failed| J[Error State]\n    I --> B\n    J --> B\n```\n\n---\n\n## 🧮 The Intelligent Contract \nThe contract (`contracts/TrustLensVerifier.py`) is written in Python for the GenLayer Virtual Machine.\n\nIt utilizes:\n1. `@gl.public.write verify_project()`: The core target accepting the JSON evidence payload.\n2. `gl.eq_principle`: Defines the equivalence principle for the multiple validators. For two evaluations to match in Optimistic Democracy, they must assign the exact same `risk_level`, `decision`, and trust scores within 10 points of each other.\n3. `gl.exec_prompt`: Re-evaluates the scraped vulnerabilities to ensure genuine risk without hallucination.\n\nIf the GenLayer network is unavailable or misconfigured, it securely falls back to centralized deterministic execution without crashing the frontend.\n\n---\n\n## 🛠️ Technology Stack\n- **Frontend / Fullstack:** Next.js 16 (App Router), React 19\n- **Network / Consensus:** GenLayer (Python Contracts, GenLayerJS SDK, GenVM Simulator)\n- **Generative Extraction:** Google `Gemini 1.5 Flash` integrated securely via `@ai-sdk/google`\n- **Design System:** TailwindCSS, Shadcn/UI, Lucide Icons\n\n---\n\n## 🚀 Installation & Local Development\n\n### 1. Prerequisites\n- Node.js `20.x` or higher\n- A standard Google Gemini API Key\n\n### 2. Environment Setup\n```bash\ngit clone https://github.com/yourusername/TrustLens-AI.git\ncd TrustLens-AI\n\nnpm install\n```\n\nCopy the example environment context:\n```bash\ncp .env.example .env\n```\nFill out `GOOGLE_GENERATIVE_AI_API_KEY`, `GENLAYER_PRIVATE_KEY` and target `GENLAYER_NETWORK=studionet` (Studio localnet) or `testnetBradbury`.\n\n### 3. Deploy Intelligent Contract\nTo deploy the Python contract in your local Studio environment:\nUse the GenLayer web studio, upload `contracts/TrustLensVerifier.py`, deploy it, and capture the Contract Hash. Put this hash in `GENLAYER_CONTRACT_ADDRESS`.\n\n### 4. Local Execution\n```bash\nnpm run dev\n```\nNavigate to `http://localhost:3000` to access the application locally.\n\n---\n\n## 🎬 Links & Resources\n- **TrustLens-AI (Root Project):** https://github.com/YousufAziz1/TrustLens-AI\n- **GenLayer Docs:** https://docs.genlayer.com\n\n## 📸 Platform Visualization\n*(Dashboard automatically streams the multi-agent execution pipeline directly onto your screen terminating in the TrustLens consensus output).*\n",
+    "stars": 0,
+    "forks": 0,
+    "openIssues": 0,
+    "license": "MIT License",
+    "contributorsCount": 1,
+    "releases": 0,
+    "lastCommitDate": "2026-08-30T10:16:23Z",
+    "recentCommits": [
+      {
+        "sha": "99ff6b9fee206a1d6ba3db031f1429824378ca6b",
+        "message": "fix(genlayer): increase contract polling timeout to 120s",
+        "date": "2026-08-30T10:16:23Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "ced2051b8b35c884a9e4c521328e45c6357b02b3",
+        "message": "fix(contract): updated GenLayer Depends magic comment header",
+        "date": "2026-08-30T09:38:38Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "09846eb18e7fc7dd76173e41872d27ce7b2d60ec",
+        "message": "fix(contract): updated py-genlayer dependency header to production hash",
+        "date": "2026-08-30T09:34:14Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "05e282e7a5a3d88d3ce71470c780ffb022da45e7",
+        "message": "fix(contract): move state type hints to class-level for schema extraction",
+        "date": "2026-08-30T09:31:23Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "6436bee94b09f8b58e6e14c7b5a5b6b342c8523f",
+        "message": "fix(contract): strip native types from helpers to bypass schema extraction failure",
+        "date": "2026-08-30T09:28:52Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "0b0c92de1ed51cb473cfeb085d0f76c4034ba9fa",
+        "message": "fix(contract): remove non-deterministic datetime breaking GenVM",
+        "date": "2026-08-30T09:24:12Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "7e6fa658b84b086734d72afde83c44c9d3956cc6",
+        "message": "chore: Global rebranding to TrustLens-AI",
+        "date": "2026-08-30T08:16:15Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "f855595072e75ea109077357f3404c3bd7154401",
+        "message": "feat: TrustLens GenLayer Integration",
+        "date": "2026-08-30T08:13:28Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "b024be8ba2c37d7452a7a21cefeafd72dc7ca499",
+        "message": "docs: Update architecture notes on A2A to A2MCP transition for hackathon judges",
+        "date": "2026-07-30T19:25:54Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "501d3fd4d5417f98ec1a697c8f636848b136c4ae",
+        "message": "feat: Add A2MCP-compliant endpoint for OKX marketplace listing approval",
+        "date": "2026-07-30T19:05:26Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "5d70f90ef4f422c3a052da1ce408cc38b3dca084",
+        "message": "hotfix: Resolve Vercel serverless 404 data wipe by migrating ephemeral file-system report caches to stateless Client-Side SessionStorage payload hydrology",
+        "date": "2026-07-30T18:43:50Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "ba9d610b16bb5432ff56719589265116de986b57",
+        "message": "Update README.md",
+        "date": "2026-07-27T15:50:44Z",
+        "author": "Yousuf Aziz"
+      },
+      {
+        "sha": "bc1a78dbc8e25a3247bfaf32057671a4d40a07bf",
+        "message": "docs(readme): sync landing page media with final v1.0.6 UX state",
+        "date": "2026-07-26T19:26:49Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "bd151aa4ceed210ef3e2eae1277491191eae1525",
+        "message": "docs(readme): patch landing page showcase image resolving 404 state",
+        "date": "2026-07-26T19:24:13Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "76bd81b8e00d0f23132bdb9cf370a47d5b221c5a",
+        "message": "docs(readme): upgrade presentation screenshots to latest high-fidelity UI assets",
+        "date": "2026-07-26T19:20:37Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "34b35874df9ee689474f6b58b02dca861154b6d9",
+        "message": "chore: update footer social and repository links",
+        "date": "2026-07-26T19:17:30Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "a43598ef069a0af7d332b321679282e11547acac",
+        "message": "fix(core): migrate storage bindings to tmp abstraction on Vercel severless environments",
+        "date": "2026-07-26T18:51:58Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "cc338ff55359ecc1ac8a9e9b225eb3decf3afcc9",
+        "message": "fix(ui): correct light mode contrast on showcase rendering",
+        "date": "2026-07-26T17:41:45Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "d320de1647d817e4ae11534cc00a71add791af6c",
+        "message": "chore: final hackathon presentation polish (readme, env, license, images)",
+        "date": "2026-07-26T17:33:20Z",
+        "author": "YousufAziz1"
+      },
+      {
+        "sha": "ea1171584e6aa8402a0eb37145ea441640f46464",
+        "message": "Release v1.0.6 - Production Ready",
+        "date": "2026-07-26T17:27:13Z",
+        "author": "YousufAziz1"
+      }
+    ]
+  },
+  "categoryScores": {
+    "security": 93,
+    "repository": 75,
+    "documentation": 0,
+    "transparency": 30,
+    "tokenomics": 0
+  },
+  "evidenceCoverage": 45,
+  "securityPenalties": [
+    {
+      "reason": "Single Contributor Risk",
+      "penalty": 5
+    },
+    {
+      "reason": "Zero Tagged Releases and Low Community Traction",
+      "penalty": 2
+    }
+  ],
+  "coveragePenalties": [
+    {
+      "reason": "Unverifiable Base Documentation Layer",
+      "penalty": 20
+    },
+    {
+      "reason": "No Tokenomics Logic Verified",
+      "penalty": 20
+    },
+    {
+      "reason": "Missing Parallel Audit Validation Sources",
+      "penalty": 15
+    }
+  ],
+  "extractedFacts": {
+    "docSections": [
+      "Overview",
+      "The Problem Statement",
+      "The Solution (GenLayer Architecture)",
+      "Key Features",
+      "Architecture & AI Multi-Agent Pipeline",
+      "The Intelligent Contract",
+      "Technology Stack",
+      "Installation & Local Development"
+    ],
+    "missingDocSections": [
+      "Tokenomics",
+      "Security Audit Reports"
+    ],
+    "securityPatterns": [
+      "GenLayer Optimistic Democracy",
+      "gl.eq_principle non-deterministic execution consensus"
+    ],
+    "ecosystemIntegrations": [
+      "GenLayer",
+      "Next.js",
+      "Vercel",
+      "Google Gemini"
+    ],
+    "hasTokenomics": false
+  },
+  "disclaimer": "DISCLAIMER: This is a software research tool generating automated reports based strictly on algorithmic data extraction. None of this data constitutes financial, investment, buy, or sell advice. Please conduct your own strict due diligence."
+}

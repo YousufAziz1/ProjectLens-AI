@@ -164,12 +164,15 @@ class TrustLensVerifier(gl.Contract):
     def _parse_evaluation(self, evaluation, det_scores, evidence_count):
         """Parse the LLM evaluation and merge with deterministic data."""
         try:
-            # Strip any markdown formatting
-            clean = evaluation.strip()
-            if clean.startswith("```"):
-                clean = clean.split("\n", 1)[-1]
-                clean = clean.rsplit("```", 1)[0]
-            result = json.loads(clean)
+            if isinstance(evaluation, dict):
+                result = evaluation
+            else:
+                # Strip any markdown formatting
+                clean = evaluation.strip()
+                if clean.startswith("```"):
+                    clean = clean.split("\n", 1)[-1]
+                    clean = clean.rsplit("```", 1)[0]
+                result = json.loads(clean)
         except (json.JSONDecodeError, Exception):
             # Fallback to deterministic scores if LLM parsing fails
             overall = det_scores.get("overall_score", 50)
