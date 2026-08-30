@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const isVercel = !!process.env.VERCEL;
-const DATA_DIR = isVercel ? path.join('/tmp', 'projectlens-data') : path.join(process.cwd(), '.projectlens-data');
+const DATA_DIR = isVercel ? path.join('/tmp', 'trustlens-data') : path.join(process.cwd(), '.trustlens-data');
 
 class PersistentStorage {
     private async ensureDir() {

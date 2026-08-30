@@ -3,7 +3,7 @@ export function Comparison() {
         <section className="border-t border-border/40 px-4 py-20 sm:py-24 bg-background">
             <div className="mx-auto max-w-5xl">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-foreground">Why ProjectLens AI?</h2>
+                    <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-foreground">Why TrustLens-AI?</h2>
                     <p className="mt-4 text-muted-foreground text-lg max-w-2xl mx-auto">
                         Traditional assessments are slow, expensive, and opaque. Autonomous intelligence changes the paradigm.
                     </p>
@@ -35,7 +35,7 @@ export function Comparison() {
                         </ul>
                     </div>
 
-                    {/* ProjectLens AI Array */}
+                    {/* TrustLens-AI Array */}
                     <div className="bg-gradient-to-b from-primary/10 to-primary/5 rounded-3xl p-8 border border-primary/30 shadow-xl relative overflow-hidden ring-1 ring-primary/20">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
                         <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl translate-y-16 -translate-x-16"></div>
@@ -43,7 +43,7 @@ export function Comparison() {
                             <span className="p-2 bg-primary text-primary-foreground rounded-lg shadow-lg">
                                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                             </span>
-                            ProjectLens AI
+                            TrustLens-AI
                         </h3>
                         <ul className="space-y-4 relative z-10">
                             <li className="flex items-center gap-3 text-foreground font-bold text-lg">

@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
-import { ProjectLensLogo } from '@/components/ui/logo';
+import { TrustLensLogo } from '@/components/ui/logo';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -22,8 +22,8 @@ export function Header() {
             <div className="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2 group">
-                    <ProjectLensLogo className="h-8 w-8 text-foreground group-hover:text-primary transition-colors duration-500" />
-                    <span className="text-base font-bold tracking-tight">ProjectLens</span>
+                    <TrustLensLogo className="h-8 w-8 text-foreground group-hover:text-primary transition-colors duration-500" />
+                    <span className="text-base font-bold tracking-tight">TrustLens</span>
                 </Link>
 
                 {/* Desktop Nav */}

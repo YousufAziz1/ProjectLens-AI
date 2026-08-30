@@ -7,7 +7,7 @@ export default function ArchitecturePage() {
             <div className="max-w-4xl mx-auto space-y-16">
 
                 <div className="text-center space-y-4">
-                    <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">How ProjectLens Works</h1>
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">How TrustLens Works</h1>
                     <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-lg leading-relaxed">
                         A fully deterministic, multi-agent artificial intelligence network built to automate complex Web3 security due diligence.
                     </p>

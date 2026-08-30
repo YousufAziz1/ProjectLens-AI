@@ -7,7 +7,7 @@ export function ReportExample() {
                 <div className="text-center mb-16">
                     <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-foreground">From Project URL &rarr; Verified Intelligence</h2>
                     <p className="mt-4 text-muted-foreground text-lg max-w-2xl mx-auto">
-                        See how ProjectLens AI transforms unstructured project data into actionable institutional insights within seconds.
+                        See how TrustLens-AI transforms unstructured project data into actionable institutional insights within seconds.
                     </p>
                 </div>
 

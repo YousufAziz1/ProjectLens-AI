@@ -42,17 +42,17 @@ export default function ReportPage(props: { params: Promise<{ id: string }> }) {
     useEffect(() => {
         if (params.id === 'demo-fallback-id') {
             setData({
-                projectName: 'ProjectLens Benchmark Asset',
+                projectName: 'TrustLens Benchmark Asset',
                 generatedAt: new Date().toISOString(),
                 sections: [
-                    { title: 'Executive Summary', content: 'ProjectLens AI executed a mathematically rigorous deterministic Web3 Security audit on ProjectLens Benchmark Asset.\n\n**Audit Matrix**:\n- **Security Integrity**: 90/100 (0 severe risks identified)\n- **Repository Health**: 82/100 (186 recent commits from 4 contributors)\n- **Documentation Coverage**: 85/100 (0 structural sections missing)\n- **Transparency Base**: 70/100 (2 independent data sources cryptographically verified)\n- **Tokenomics Model**: Not Discovered or Unavailable\n\n**Overall Weighted Protocol Score**: **84/100** points mapped across 2 distinct verification vectors.', score: 84 },
+                    { title: 'Executive Summary', content: 'TrustLens-AI executed a mathematically rigorous deterministic Web3 Security audit on TrustLens Benchmark Asset.\n\n**Audit Matrix**:\n- **Security Integrity**: 90/100 (0 severe risks identified)\n- **Repository Health**: 82/100 (186 recent commits from 4 contributors)\n- **Documentation Coverage**: 85/100 (0 structural sections missing)\n- **Transparency Base**: 70/100 (2 independent data sources cryptographically verified)\n- **Tokenomics Model**: Not Discovered or Unavailable\n\n**Overall Weighted Protocol Score**: **84/100** points mapped across 2 distinct verification vectors.', score: 84 },
                 ],
                 strengths: ['[LOW] Decentralized Governance Structure', '[LOW] Strong Liquidity Pool Depth'],
                 weaknesses: ['[MEDIUM] Admin Keys Not Burned'],
                 missingInformation: ['Whitepaper PDF layer missing from contextual traces.'],
                 evidence: [
-                    { id: 'ev-demo-1', claimId: 'claim-1', sourceType: 'github', confidence: 'high', snippet: 'function executeProposal() public onlyAdmin { ... }', source: 'https://github.com/projectlens/showcase/blob/main/Governance.sol#L14', agentName: 'GitHub Agent', findingTitle: 'Admin Keys Not Burned' },
-                    { id: 'ev-demo-2', claimId: 'claim-2', sourceType: 'documentation', confidence: 'high', snippet: 'Governance operations are secured via segmented protocol multisig constraints limiting arbitrary calls.', source: 'https://docs.projectlens.ai/governance.md', agentName: 'Documentation Agent', findingTitle: 'Decentralized Governance Structure' }
+                    { id: 'ev-demo-1', claimId: 'claim-1', sourceType: 'github', confidence: 'high', snippet: 'function executeProposal() public onlyAdmin { ... }', source: 'https://github.com/trustlens/showcase/blob/main/Governance.sol#L14', agentName: 'GitHub Agent', findingTitle: 'Admin Keys Not Burned' },
+                    { id: 'ev-demo-2', claimId: 'claim-2', sourceType: 'documentation', confidence: 'high', snippet: 'Governance operations are secured via segmented protocol multisig constraints limiting arbitrary calls.', source: 'https://docs.trustlens.ai/governance.md', agentName: 'Documentation Agent', findingTitle: 'Decentralized Governance Structure' }
                 ],
                 githubData: { stars: 124, forks: 42, openIssues: 37, license: 'MIT License', contributorsCount: 4, releases: 0, lastCommitDate: new Date().toISOString(), recentCommits: [] },
                 categoryScores: { security: 90, repository: 82, documentation: 85, transparency: 70, tokenomics: 0 },
@@ -64,7 +64,7 @@ export default function ReportPage(props: { params: Promise<{ id: string }> }) {
             setIsLoading(false);
         } else {
             // First check sessionStorage for live reports
-            const cached = sessionStorage.getItem('projectlens-report-' + params.id);
+            const cached = sessionStorage.getItem('trustlens-report-' + params.id);
             if (cached) {
                 try {
                     setData(JSON.parse(cached));
@@ -72,7 +72,7 @@ export default function ReportPage(props: { params: Promise<{ id: string }> }) {
                     console.error('Failed to parse cached report', e);
                 }
 
-                const glCached = sessionStorage.getItem('projectlens-genlayer-' + params.id);
+                const glCached = sessionStorage.getItem('trustlens-genlayer-' + params.id);
                 if (glCached) {
                     try {
                         setGenlayerData(JSON.parse(glCached));
@@ -167,7 +167,7 @@ export default function ReportPage(props: { params: Promise<{ id: string }> }) {
             <div className="flex flex-col mb-10 w-full">
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary mb-4">
                     <span className="flex h-2.5 w-2.5 rounded-full bg-primary animate-pulse"></span>
-                    ProjectLens AI Audit Report
+                    TrustLens-AI Audit Report
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -242,7 +242,7 @@ export default function ReportPage(props: { params: Promise<{ id: string }> }) {
                                 </div>
                             </div>
                             <p className="text-sm text-zinc-400 leading-relaxed max-w-3xl">
-                                ProjectLens deterministic evidence was submitted on-chain to the GenLayer network. Multiple independent AI validators evaluated the evidence payload to reach consensus on the target's risk profile without relying on a centralized scoring authority.
+                                TrustLens deterministic evidence was submitted on-chain to the GenLayer network. Multiple independent AI validators evaluated the evidence payload to reach consensus on the target's risk profile without relying on a centralized scoring authority.
                             </p>
 
                             {genlayerData?.status === 'verified' && genlayerData.result ? (
@@ -349,7 +349,7 @@ export default function ReportPage(props: { params: Promise<{ id: string }> }) {
                         <div className="space-y-1">
                             <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Powered by</h3>
                             <div className="text-xl font-bold flex items-center gap-2">
-                                ProjectLens AI
+                                TrustLens-AI
                             </div>
                             <p className="text-sm font-medium text-foreground/80 mt-1">
                                 OKX.AI Agent Service Provider

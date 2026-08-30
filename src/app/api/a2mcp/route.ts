@@ -14,7 +14,7 @@ const SERVICE_INFO = {
     agentId: '9422',
     serviceName: 'Web3 Due Diligence Auditor',
     version: '1.0.7',
-    description: 'ProjectLens AI analyzes Web3 projects using GitHub, documentation, and technical evidence to generate transparent, verifiable research reports.',
+    description: 'TrustLens-AI analyzes Web3 projects using GitHub, documentation, and technical evidence to generate transparent, verifiable research reports.',
     capabilities: ['GitHub Repository Analysis', 'Documentation Review', 'Whitepaper Intelligence', 'Evidence-Based Risk Assessment'],
     inputSchema: {
         type: 'object',
@@ -32,7 +32,7 @@ export async function GET() {
     return NextResponse.json({
         status: 'ok',
         agent: SERVICE_INFO,
-        message: 'ProjectLens AI A2MCP Service is online and ready to accept requests.',
+        message: 'TrustLens-AI A2MCP Service is online and ready to accept requests.',
         usage: 'Send a POST request with { "query": "project-name-or-url" } to initiate an audit.'
     }, { status: 200 });
 }
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
                 status: 'ok',
                 agent: SERVICE_INFO.serviceName,
                 agentId: SERVICE_INFO.agentId,
-                message: 'ProjectLens AI is online. Provide a "query" field with a Web3 project name or URL to begin analysis.',
+                message: 'TrustLens-AI is online. Provide a "query" field with a Web3 project name or URL to begin analysis.',
                 ready: true
             }, { status: 200 });
         }
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
             serviceName: SERVICE_INFO.serviceName,
             query: query,
             result: {
-                message: `ProjectLens AI received your request to audit "${query}". For the full interactive audit experience with detailed scores, evidence chains, and downloadable reports, visit our platform directly.`,
+                message: `TrustLens-AI received your request to audit "${query}". For the full interactive audit experience with detailed scores, evidence chains, and downloadable reports, visit our platform directly.`,
                 auditUrl: `https://project-lens-ai.vercel.app/analyze`,
                 capabilities: SERVICE_INFO.capabilities,
                 scoringWeights: {

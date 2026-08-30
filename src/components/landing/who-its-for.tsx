@@ -31,7 +31,7 @@ export function WhoItsFor() {
         <section className="border-t border-border/40 px-4 py-20 sm:py-24 bg-background">
             <div className="mx-auto max-w-screen-xl">
                 <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
-                    Who Uses ProjectLens AI?
+                    Who Uses TrustLens-AI?
                 </h2>
                 <p className="mx-auto mt-4 max-w-lg text-center text-lg text-muted-foreground">
                     Built for the core pillars of the decentralized ecosystem.

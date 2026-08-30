@@ -1,4 +1,4 @@
-export function ProjectLensLogo({ className = "w-10 h-10" }: { className?: string }) {
+export function TrustLensLogo({ className = "w-10 h-10" }: { className?: string }) {
     return (
         <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
             {/* Outer Lens/Aperture */}

@@ -100,7 +100,7 @@ export class MasterReportAgent {
         }
 
         // 2. FACTUAL EXECUTIVE SUMMARY
-        const execSummaryContent = `ProjectLens AI executed a mathematically rigorous deterministic Web3 Security audit on ${projectName}.\n\n` +
+        const execSummaryContent = `TrustLens-AI executed a mathematically rigorous deterministic Web3 Security audit on ${projectName}.\n\n` +
             `**Audit Matrix**:\n` +
             `- **Security Integrity**: ${securityScore}/100 (${severeRisks} severe risks identified)\n` +
             `- **Repository Health**: ${repoScore}/100 (${ghData ? `${ghData.recentCommits?.length || 0} recent commits from ${ghData.contributorsCount} contributors` : 'Missing Repository Data'})\n` +

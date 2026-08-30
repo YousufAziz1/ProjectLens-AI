@@ -11,7 +11,7 @@ async function test() {
         collectedData: {
             documentation: {
                 status: 'success',
-                data: 'To install ProjectLens, run npm install and npm build. This project is highly experimental. Contains APIs for web scraping.'
+                data: 'To install TrustLens, run npm install and npm build. This project is highly experimental. Contains APIs for web scraping.'
             }
         }
     } as unknown as AiContext;

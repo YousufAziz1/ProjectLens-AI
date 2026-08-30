@@ -12,7 +12,7 @@ export function AiAgents() {
                 <div className="flex flex-col items-center max-w-4xl mx-auto relative z-10">
                     {/* Top Node */}
                     <div className="bg-primary text-primary-foreground font-black tracking-widest uppercase px-8 py-4 rounded-xl shadow-lg border border-primary-foreground/20 text-lg">
-                        ProjectLens AI
+                        TrustLens-AI
                     </div>
 
                     {/* Connecting Line */}

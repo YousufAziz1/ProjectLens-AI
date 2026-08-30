@@ -19,7 +19,7 @@ export default function ApiDocsPage() {
                         </Link>
                     </div>
                     <p className="text-muted-foreground max-w-xl font-medium">
-                        Programmatically interact with the ProjectLens autonomous AI subnet. Submit audits, extract granular evidence chains, and build deterministic UI on top.
+                        Programmatically interact with the TrustLens autonomous AI subnet. Submit audits, extract granular evidence chains, and build deterministic UI on top.
                     </p>
                 </div>
 
@@ -55,11 +55,11 @@ export default function ApiDocsPage() {
                             <div className="space-y-4">
                                 <div>
                                     <p className="text-xs font-semibold mb-1">JavaScript</p>
-                                    <code className="text-xs font-mono bg-zinc-950 p-2.5 rounded block text-zinc-300 border border-border/40 shadow-inner">npm install projectlens-sdk</code>
+                                    <code className="text-xs font-mono bg-zinc-950 p-2.5 rounded block text-zinc-300 border border-border/40 shadow-inner">npm install trustlens-sdk</code>
                                 </div>
                                 <div>
                                     <p className="text-xs font-semibold mb-1">Python</p>
-                                    <code className="text-xs font-mono bg-zinc-950 p-2.5 rounded block text-zinc-300 border border-border/40 shadow-inner">pip install projectlens</code>
+                                    <code className="text-xs font-mono bg-zinc-950 p-2.5 rounded block text-zinc-300 border border-border/40 shadow-inner">pip install trustlens</code>
                                 </div>
                             </div>
                         </CardContent>
@@ -124,7 +124,7 @@ export default function ApiDocsPage() {
                                     <Copy className="w-3.5 h-3.5 opacity-50 hover:opacity-100 cursor-pointer transition-opacity" />
                                 </h3>
                                 <div className="bg-zinc-950 p-4 rounded-lg border border-border/40 font-mono text-xs text-zinc-300 overflow-x-auto shadow-inner">
-                                    <pre><code>{`curl -X POST https://api.projectlens.ai/v1/analyze \\
+                                    <pre><code>{`curl -X POST https://api.trustlens.ai/v1/analyze \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{

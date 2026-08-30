@@ -1,5 +1,5 @@
 /**
- * Evidence Builder — transforms the existing ProjectLens pipeline output
+ * Evidence Builder — transforms the existing TrustLens pipeline output
  * into structured ProjectEvidence for GenLayer contract submission.
  */
 import type { ProjectEvidence } from './types';

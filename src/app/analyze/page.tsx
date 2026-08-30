@@ -85,10 +85,10 @@ export default function AnalyzePage() {
                                 setProgress(prev => [...prev, payload.stage]);
                             } else if (payload.success && payload.id) {
                                 if (payload.report) {
-                                    sessionStorage.setItem('projectlens-report-' + payload.id, JSON.stringify(payload.report));
+                                    sessionStorage.setItem('trustlens-report-' + payload.id, JSON.stringify(payload.report));
                                 }
                                 if (payload.genlayer) {
-                                    sessionStorage.setItem('projectlens-genlayer-' + payload.id, JSON.stringify(payload.genlayer));
+                                    sessionStorage.setItem('trustlens-genlayer-' + payload.id, JSON.stringify(payload.genlayer));
                                 }
                                 setSuccessId(payload.id);
                             } else if (payload.error) {
@@ -256,7 +256,7 @@ export default function AnalyzePage() {
                                         {successId ? 'Analysis Complete' : 'Autonomous Agent Subnet Active'}
                                     </h3>
                                     <p className="text-xs font-mono text-muted-foreground mt-2 font-semibold">
-                                        {successId ? 'ProjectLens finalized the structural audit report.' : 'DO NOT CLOSE THIS PAGE. Background workers are extracting structural metadata and applying deterministic constraints.'}
+                                        {successId ? 'TrustLens finalized the structural audit report.' : 'DO NOT CLOSE THIS PAGE. Background workers are extracting structural metadata and applying deterministic constraints.'}
                                     </p>
                                 </div>
                                 <div className="flex gap-2 font-mono text-[10px] uppercase font-bold tracking-widest">

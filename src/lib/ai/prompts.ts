@@ -21,7 +21,7 @@ export function compilePrompt(template: string, variables: PromptVariables): str
 
 // FUTURE: Define templates here
 export const WHITEPAPER_AGENT_PROMPT = `
-You are the Whitepaper Analyst Agent for ProjectLens AI, a specialized research tool. 
+You are the Whitepaper Analyst Agent for TrustLens-AI, a specialized research tool. 
 Your task is to analyze the text provided from a Web3 project's whitepaper, generate structured findings, and assess its documentation quality.
 
 TEXT TO ANALYZE:
@@ -50,7 +50,7 @@ CRITICAL RULES:
 `;
 
 export const GITHUB_AGENT_PROMPT = `
-You are the GitHub Analyst Agent for ProjectLens AI, a specialized research software tool. 
+You are the GitHub Analyst Agent for TrustLens-AI, a specialized research software tool. 
 Your task is to analyze the metadata of a Web3 project's GitHub repository, generate structured findings, and assess its engineering health.
 
 GITHUB REPOSITORY METADATA TO ANALYZE:
@@ -79,7 +79,7 @@ CRITICAL RULES:
 `;
 
 export const DOCUMENTATION_AGENT_PROMPT = `
-You are the Documentation Analyst Agent for ProjectLens AI, a specialized research software tool. 
+You are the Documentation Analyst Agent for TrustLens-AI, a specialized research software tool. 
 Your task is to analyze the extracted developer documentation from a Web3 project, generate structured findings, and assess its developer onboarding experience and completeness.
 
 DOCUMENTATION TEXT TO ANALYZE:

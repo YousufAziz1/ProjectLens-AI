@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ProjectLensLogo } from '@/components/ui/logo';
+import { TrustLensLogo } from '@/components/ui/logo';
 
 export function Footer() {
     return (
@@ -9,9 +9,9 @@ export function Footer() {
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center gap-2">
                             <span className="w-8 h-8 rounded-md bg-gradient-to-br from-foreground to-foreground/80 flex items-center justify-center text-background shadow-md">
-                                <ProjectLensLogo className="w-6 h-6" />
+                                <TrustLensLogo className="w-6 h-6" />
                             </span>
-                            <span className="text-lg font-bold tracking-tight">ProjectLens AI</span>
+                            <span className="text-lg font-bold tracking-tight">TrustLens-AI</span>
                         </div>
                         <p className="text-sm text-muted-foreground font-medium leading-relaxed mt-2 max-w-xs">
                             Autonomous agent network delivering verifiable due diligence for the decentralized web.
@@ -41,7 +41,7 @@ export function Footer() {
                                     <Link href="/architecture" className="hover:text-primary transition-colors hover:translate-x-1 inline-block transform duration-200">Documentation</Link>
                                 </li>
                                 <li>
-                                    <a href="https://github.com/YousufAziz1/ProjectLens-AI" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors hover:translate-x-1 inline-block transform duration-200">GitHub Open Source ↗</a>
+                                    <a href="https://github.com/YousufAziz1/TrustLens-AI" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors hover:translate-x-1 inline-block transform duration-200">GitHub Open Source ↗</a>
                                 </li>
                                 <li>
                                     <Link href="/dashboard" className="hover:text-primary transition-colors hover:translate-x-1 inline-block transform duration-200">Security Parameters</Link>
@@ -53,7 +53,7 @@ export function Footer() {
                             <p className="font-bold text-foreground mb-4">Community</p>
                             <ul className="space-y-3 text-sm text-muted-foreground">
                                 <li>
-                                    <a href="https://x.com/ProjectLensAi" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors hover:translate-x-1 inline-block transform duration-200 flex items-center gap-2">X (Twitter) ↗</a>
+                                    <a href="https://x.com/TrustLensAi" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors hover:translate-x-1 inline-block transform duration-200 flex items-center gap-2">X (Twitter) ↗</a>
                                 </li>
                             </ul>
                         </div>
@@ -62,7 +62,7 @@ export function Footer() {
 
                 <div className="mt-16 border-t border-border/40 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-xs text-muted-foreground font-medium text-center md:text-left">
-                        © {new Date().getFullYear()} ProjectLens AI. All rights reserved. ASP #9422.
+                        © {new Date().getFullYear()} TrustLens-AI. All rights reserved. ASP #9422.
                     </p>
                     <p className="text-[10px] text-muted-foreground/60 uppercase tracking-widest text-center md:text-right">
                         For research purposes only. Not financial advice.

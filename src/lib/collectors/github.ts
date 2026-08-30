@@ -39,7 +39,7 @@ export async function collectFromGitHub(url: string): Promise<CollectorOutput<Gi
     const baseUrl = `https://api.github.com/repos/${owner}/${repo}`;
     const headers = {
         'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'ProjectLens-AI-Collector'
+        'User-Agent': 'TrustLens-AI-Collector'
     };
 
     try {

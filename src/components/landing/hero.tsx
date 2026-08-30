@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ProjectLensLogo } from '@/components/ui/logo';
+import { TrustLensLogo } from '@/components/ui/logo';
 
 export function Hero() {
     return (
@@ -27,7 +27,7 @@ export function Hero() {
                     </div>
 
                     <div className="hidden lg:flex w-20 h-20 items-center justify-center rounded-3xl bg-gradient-to-br from-foreground/5 to-foreground/10 shadow-2xl ring-1 ring-border/50 mb-8 backdrop-blur-md">
-                        <ProjectLensLogo className="h-12 w-12 text-foreground" />
+                        <TrustLensLogo className="h-12 w-12 text-foreground" />
                     </div>
 
                     <h1 className="text-5xl font-black tracking-tight sm:text-6xl text-balance drop-shadow-sm leading-tight text-foreground">

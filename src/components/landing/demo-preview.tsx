@@ -54,7 +54,7 @@ export function DemoPreview() {
         <section className="px-4 py-16 sm:py-24 border-t border-border/40">
             <div className="mx-auto max-w-5xl">
                 <div className="text-center mb-12">
-                    <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">See ProjectLens AI in Action</h2>
+                    <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">See TrustLens-AI in Action</h2>
                     <p className="mt-3 text-sm text-muted-foreground">
                         Watch how our autonomous agents securely execute a pipeline and report findings.
                     </p>
@@ -67,7 +67,7 @@ export function DemoPreview() {
                             <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
                             <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
                             <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
-                            <span className="ml-2 text-xs font-mono text-muted-foreground">projectlens-pipeline-sh</span>
+                            <span className="ml-2 text-xs font-mono text-muted-foreground">trustlens-pipeline-sh</span>
                         </div>
                         <CardContent className="p-6 font-mono text-sm">
                             <div className="flex flex-col gap-3">

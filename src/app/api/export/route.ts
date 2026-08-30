@@ -27,7 +27,7 @@ export async function GET(request: Request) {
     }
 
     if (format === 'md') {
-        let md = `# ProjectLens AI Report: ${data.projectName}\n\n`;
+        let md = `# TrustLens-AI Report: ${data.projectName}\n\n`;
         md += `Generated At: ${data.generatedAt}\n\n`;
 
         data.sections?.forEach((section: { title: string, score?: number, content: string }) => {

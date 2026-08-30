@@ -10,7 +10,7 @@ export default function ReportsPage() {
                 <div className="text-center space-y-4">
                     <h1 className="text-4xl font-black tracking-tight text-foreground">Latest AI Audits</h1>
                     <p className="text-muted-foreground max-w-xl mx-auto font-medium">
-                        Public ledger of completely transparent, evidence-backed security reports generated autonomously by the ProjectLens network.
+                        Public ledger of completely transparent, evidence-backed security reports generated autonomously by the TrustLens network.
                     </p>
                 </div>
 

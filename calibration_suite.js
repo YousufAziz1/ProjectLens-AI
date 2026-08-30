@@ -36,7 +36,7 @@ async function testProject(target) {
             if (successPayload) {
                 const json = JSON.parse(successPayload.replace('data: ', ''));
                 // Read the report file natively from disk for data validation!
-                const reportBlob = await fs.readFile(`.projectlens-data/${json.id}.json`, 'utf8');
+                const reportBlob = await fs.readFile(`.trustlens-data/${json.id}.json`, 'utf8');
                 const report = JSON.parse(reportBlob);
                 return { target, success: true, runtime, report };
             }

@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://assets.objkt.media/file/assets-003/QmeSjSinHgABtuYtwN8hHpsq1pALN3Qv4K5YgK5y2N8h2t/artifact" width="120" height="120" alt="TrustLens Logo">
-  <h1>TrustLens (Powered by ProjectLens) 🔍</h1>
+  <h1>TrustLens (Powered by TrustLens) 🔍</h1>
   <p><b>A GenLayer Web3 Due Diligence Integration</b></p>
   <p>An autonomous Intelligence pipeline that verifies Web3 project risk through GenLayer's AI-validated Intelligent Contracts.</p>
 </div>
@@ -24,7 +24,7 @@ Traditional AI screening tools rely on a single, centralized LLM inference to ju
 Retail investors consistently lose millions of dollars into malicious, hollow, or functionally broken Web3 ecosystems. Evaluating modern protocols requires cross-referencing GitHub commits, checking smart contract security, and verifying deep Documentation layers. Centralized AI tools fail because you have to 'blindly trust' the platform's backend prompt wrapper.
 
 ## 🟢 The Solution (GenLayer Architecture)
-TrustLens leverages the **ProjectLens AI collector pipeline** to autonomously scour a target protocol's GitHub, documentation, and architecture. 
+TrustLens leverages the **TrustLens-AI collector pipeline** to autonomously scour a target protocol's GitHub, documentation, and architecture. 
 
 Instead of terminating at a centralized score, it packages this evidence matrix and forwards it directly to the **TrustLens GenLayer Intelligent Contract**. The GenLayer validators independently analyze the evidence via `gl.eq_principle` non-deterministic execution, achieving on-chain consensus on the project's exact risk level, and outputting an immutable transaction ledger of the verification.
 
@@ -85,8 +85,8 @@ If the GenLayer network is unavailable or misconfigured, it securely falls back 
 
 ### 2. Environment Setup
 ```bash
-git clone https://github.com/yourusername/ProjectLens-AI.git
-cd ProjectLens-AI
+git clone https://github.com/yourusername/TrustLens-AI.git
+cd TrustLens-AI
 
 npm install
 ```
@@ -110,7 +110,7 @@ Navigate to `http://localhost:3000` to access the application locally.
 ---
 
 ## 🎬 Links & Resources
-- **ProjectLens AI (Root Project):** https://github.com/YousufAziz1/ProjectLens-AI
+- **TrustLens-AI (Root Project):** https://github.com/YousufAziz1/TrustLens-AI
 - **GenLayer Docs:** https://docs.genlayer.com
 
 ## 📸 Platform Visualization

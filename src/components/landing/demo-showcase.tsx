@@ -10,7 +10,7 @@ export function DemoShowcase() {
                     <div className="space-y-3">
                         <h2 className="text-3xl font-black tracking-tight text-foreground">Recently Analyzed</h2>
                         <p className="text-muted-foreground font-medium max-w-xl">
-                            Live showcase of verified audits executed by the autonomous ProjectLens subnet. Explore real deterministic evidence extraction.
+                            Live showcase of verified audits executed by the autonomous TrustLens subnet. Explore real deterministic evidence extraction.
                         </p>
                     </div>
                     <Link href="/reports" className="text-sm font-bold text-primary hover:text-primary/80 transition-colors flex items-center gap-1 group">
