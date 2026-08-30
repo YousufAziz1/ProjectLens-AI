@@ -59,7 +59,7 @@ export class MasterReportAgent {
             missingInfo.push("Insufficient parallel intelligence sources for consensus validation");
         }
 
-        let transScore = activeSources >= 3 ? 100 : activeSources >= 2 ? 70 : 30;
+        const transScore = activeSources >= 3 ? 100 : activeSources >= 2 ? 70 : 30;
         evidenceCoverage = Math.max(0, evidenceCoverage);
 
         for (const finding of normalized.normalizedFindings) {

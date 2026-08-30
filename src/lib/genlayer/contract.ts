@@ -9,21 +9,18 @@ import type { ProjectEvidence, VerificationResult, GenLayerVerificationResponse 
 import { GenLayerVerificationStatus } from './types';
 import { TransactionStatus } from 'genlayer-js/types';
 
-/** Timeout for waiting on GenLayer transaction finalization (120 seconds) */
-const VERIFICATION_TIMEOUT_MS = 120_000;
+/** Removed old timeout as polling is now decentralized */
 
 /**
  * Submit project evidence to the GenLayer TrustLensVerifier contract
  * and wait for the consensus-verified result.
  */
 export async function submitVerification(
-    evidence: ProjectEvidence,
-    onProgress?: (status: string, txHash?: string) => void
+    evidence: ProjectEvidence
 ): Promise<GenLayerVerificationResponse> {
     const network = getNetwork();
     const contractAddress = getContractAddress();
 
-    // Check if GenLayer is configured
     if (!isGenLayerConfigured() || !contractAddress) {
         return {
             status: GenLayerVerificationStatus.UNAVAILABLE,
@@ -31,19 +28,15 @@ export async function submitVerification(
             transactionHash: null,
             contractAddress: null,
             executionTimestamp: null,
-            error: 'GenLayer contract address not configured. Set GENLAYER_CONTRACT_ADDRESS in environment.',
+            error: 'GenLayer contract not configured.',
             network,
         };
     }
 
     try {
-        // Create a signing client for write transactions
         const { client } = createGenLayerClient();
-
-        // Serialize evidence into the format expected by the contract
         const evidenceJson = JSON.stringify(evidence);
 
-        // Submit the verification transaction
         const transactionHash = await client.writeContract({
             address: contractAddress as `0x${string}`,
             functionName: 'verify_project',
@@ -51,84 +44,111 @@ export async function submitVerification(
             value: BigInt(0),
         });
 
-        if (onProgress) {
-            onProgress('SUBMITTED', transactionHash);
+        return {
+            status: GenLayerVerificationStatus.PENDING,
+            result: null,
+            transactionHash: transactionHash as string,
+            contractAddress,
+            executionTimestamp: new Date().toISOString(),
+            error: null,
+            network,
+        };
+    } catch (error) {
+        return {
+            status: GenLayerVerificationStatus.FAILED,
+            result: null,
+            transactionHash: null,
+            contractAddress,
+            executionTimestamp: new Date().toISOString(),
+            error: `Submission error: ${error instanceof Error ? error.message : String(error)}`,
+            network,
+        };
+    }
+}
+
+export async function fetchVerificationStatus(transactionHash: string): Promise<GenLayerVerificationResponse> {
+    const network = getNetwork();
+    const contractAddress = getContractAddress();
+
+    try {
+        const { client } = createGenLayerClient();
+        const tx = await client.getTransaction({ hash: transactionHash as any });
+        let rawStatus = tx?.status as unknown as number | undefined;
+
+        let statusName = 'PENDING';
+        if (rawStatus === 5 /* ACCEPTED */) {
+            statusName = 'ACCEPTED';
+        } else if (rawStatus === 7 /* FINALIZED */) {
+            statusName = 'FINALIZED';
+        } else if (rawStatus !== undefined) {
+            const names = ['PENDING', 'PROPOSING', 'COMMITTING', 'REVEALING', 'ACCEPTED', 'FINALIZED', 'UNDETERMINED'];
+            statusName = names[rawStatus] || `STATUS_${rawStatus}`;
         }
 
-        // Wait for the transaction to be finalized by consensus using polling
-        const startTime = Date.now();
+        if (rawStatus === undefined) {
+            rawStatus = 0; // Default pending if indexing delayed
+        }
+
+        if (statusName === 'UNDETERMINED') {
+            return {
+                status: GenLayerVerificationStatus.FAILED,
+                result: null,
+                transactionHash,
+                contractAddress,
+                executionTimestamp: new Date().toISOString(),
+                error: 'Transaction reached UNDETERMINED state.',
+                network,
+            };
+        }
+
+        // Must explicitly wait for actual FINALIZED (7)
+        if (rawStatus !== 7 && statusName !== 'FINALIZED') {
+            return {
+                status: GenLayerVerificationStatus.EXECUTING, // generic in-progress mapped status
+                result: null,
+                transactionHash,
+                contractAddress,
+                executionTimestamp: new Date().toISOString(),
+                error: null,
+                network,
+                // Passing raw descriptive state back is helpful, we can piggyback it on the error string temporally or just the UI will see EXECUTING
+                // Alternatively, error msg is used for passing strict enum status to UI
+                // So let's attach the detailed enum name as the "error" field when it's pending to stream real names:
+            };
+        }
+
+        // If we reached FINALIZED (7), fetch receipt and inspect execution outcome
         let finalReceipt = null;
-
-        while (true) {
-            try {
-                const tx = await client.getTransaction({ hash: transactionHash });
-                const currentStatus = tx?.status;
-
-                let statusName = 'PENDING';
-                if (currentStatus !== undefined && currentStatus !== null) {
-                    if (typeof currentStatus === 'string') {
-                        statusName = currentStatus;
-                    } else if (typeof currentStatus === 'number') {
-                        const names = ['PENDING', 'PROPOSING', 'COMMITTING', 'REVEALING', 'ACCEPTED', 'FINALIZED', 'UNDETERMINED'];
-                        statusName = names[currentStatus] || `STATUS_${currentStatus}`;
-                    }
-                }
-
-                if (onProgress) {
-                    onProgress(statusName.toUpperCase(), transactionHash);
-                }
-
-                if (currentStatus === TransactionStatus.FINALIZED || statusName.toUpperCase() === 'FINALIZED') {
-                    // Try to get receipt when finalized
-                    try {
-                        finalReceipt = await client.getTransactionReceipt({ hash: transactionHash });
-                    } catch (e) {
-                        // ignore and it might fetch on next loop if race condition
-                    }
-                    if (finalReceipt) break;
-                }
-
-                if (statusName.toUpperCase() === 'UNDETERMINED') {
-                    throw new Error('Transaction reached UNDETERMINED consensus state.');
-                }
-            } catch (err) {
-                // If getTransaction throws (e.g. indexing delay), safely ignore and wait
-                // Unless we matched UNDETERMINED
-                if (err instanceof Error && err.message.includes('UNDETERMINED')) throw err;
-            }
-
-            if (Date.now() - startTime > VERIFICATION_TIMEOUT_MS) {
-                // Timeout reached, expose as pending instead of throwing a false failure
-                return {
-                    status: GenLayerVerificationStatus.PENDING,
-                    result: null,
-                    transactionHash: transactionHash as string,
-                    contractAddress,
-                    executionTimestamp: new Date().toISOString(),
-                    error: null,
-                    network,
-                };
-            }
-
-            await new Promise(r => setTimeout(r, 4000));
+        try {
+            finalReceipt = await client.getTransactionReceipt({ hash: transactionHash as any });
+        } catch (e) {
+            // Receipt might lag slightly behind the getTransaction consensus mapping
+            return {
+                status: GenLayerVerificationStatus.EXECUTING,
+                result: null,
+                transactionHash,
+                contractAddress,
+                executionTimestamp: new Date().toISOString(),
+                error: null,
+                network,
+            };
         }
 
-        // Check execution result
         const execResult = (finalReceipt as Record<string, unknown>)?.txExecutionResultName as string | undefined;
 
         if (execResult === 'FINISHED_WITH_ERROR') {
             return {
                 status: GenLayerVerificationStatus.FAILED,
                 result: null,
-                transactionHash: transactionHash as string,
+                transactionHash,
                 contractAddress,
                 executionTimestamp: new Date().toISOString(),
-                error: 'GenLayer contract execution failed during consensus.',
+                error: 'GenLayer contract execution failed with FINISHED_WITH_ERROR.',
                 network,
             };
         }
 
-        // Read the verification result from contract state
+        // Transaction successfully finalized, now read the updated intelligent contract verification state
         const { client: readClient } = createGenLayerReadClient();
         const rawResult = await readClient.readContract({
             address: contractAddress as `0x${string}`,
@@ -136,29 +156,25 @@ export async function submitVerification(
             args: [],
         });
 
-        // Parse the result
-        const verificationResult = parseVerificationResult(rawResult);
-
         return {
             status: GenLayerVerificationStatus.VERIFIED,
-            result: verificationResult,
-            transactionHash: transactionHash as string,
+            result: parseVerificationResult(rawResult),
+            transactionHash,
             contractAddress,
             executionTimestamp: new Date().toISOString(),
             error: null,
             network,
         };
 
-    } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-
+    } catch (err) {
+        // If indexing temporarily fails or network blips, return pending so frontend continues polling
         return {
-            status: GenLayerVerificationStatus.FAILED,
+            status: GenLayerVerificationStatus.PENDING,
             result: null,
-            transactionHash: null,
+            transactionHash,
             contractAddress,
             executionTimestamp: new Date().toISOString(),
-            error: `GenLayer verification error: ${errorMessage}`,
+            error: null,
             network,
         };
     }

@@ -98,6 +98,33 @@ export default function ReportPage(props: { params: Promise<{ id: string }> }) {
         }
     }, [params.id]);
 
+    useEffect(() => {
+        if (!genlayerData) return;
+
+        const isProcessing = ['pending', 'executing', 'submitting'].includes(genlayerData.status.toLowerCase());
+
+        if (isProcessing && genlayerData.transactionHash) {
+            const timer = setInterval(() => {
+                fetch(`/api/genlayer/status?hash=${genlayerData.transactionHash}`)
+                    .then(r => r.ok ? r.json() : null)
+                    .then(d => {
+                        if (d && d.status) {
+                            setGenlayerData(d);
+                            // Also update cached storage so a hard reload keeps state
+                            sessionStorage.setItem('trustlens-genlayer-' + params.id, JSON.stringify(d));
+
+                            // Let the backend update persist eventually when verified
+                            // The backend could technically have a webhook or we could POST the update to storage, 
+                            // but UI state updating from API response is sufficient for Vercel scale!
+                        }
+                    })
+                    .catch(e => console.error('Error polling GenLayer status:', e));
+            }, 5000);
+
+            return () => clearInterval(timer);
+        }
+    }, [genlayerData?.status, genlayerData?.transactionHash, params.id]);
+
     if (isLoading) {
         return <div className="flex flex-col h-screen items-center justify-center bg-zinc-950 text-white font-mono"><span className="animate-spin border-4 border-emerald-500 border-t-transparent rounded-full w-12 h-12 mb-6 shadow-[0_0_15px_rgba(16,185,129,0.5)]"></span> <span className="uppercase tracking-widest text-sm font-bold text-emerald-400">Loading Intelligence Map...</span></div>;
     }
@@ -267,7 +294,10 @@ export default function ReportPage(props: { params: Promise<{ id: string }> }) {
                             ) : genlayerData?.status === 'executing' || genlayerData?.status === 'pending' || genlayerData?.status === 'submitting' ? (
                                 <div className="mt-6 p-6 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center gap-4">
                                     <span className="w-5 h-5 rounded-full border-2 border-violet-500/30 border-t-violet-500 animate-spin"></span>
-                                    <span className="text-sm font-bold text-zinc-300 uppercase tracking-widest">Awaiting Network Finalization...</span>
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-bold text-zinc-300 uppercase tracking-widest">Awaiting Network Consensus...</span>
+                                        <span className="text-[10px] font-mono text-zinc-500 mt-1 uppercase tracking-widest">State: {genlayerData?.error || 'PROCESSING IN VIRTUAL MACHINE'}</span>
+                                    </div>
                                 </div>
                             ) : genlayerData?.status === 'unavailable' ? (
                                 <div className="mt-6 p-4 bg-zinc-900 border border-zinc-800 rounded-xl flex items-start gap-3">

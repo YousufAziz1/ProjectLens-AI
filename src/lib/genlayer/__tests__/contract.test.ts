@@ -1,11 +1,12 @@
+// @ts-ignore
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { submitVerification } from '../contract';
+import { submitVerification, fetchVerificationStatus } from '../contract';
 import { GenLayerVerificationStatus, ProjectEvidence } from '../types';
 
-let mockTxStatus = 0;
-let mockWriteContract = vi.fn();
-let mockGetTransaction = vi.fn();
-let mockGetTransactionReceipt = vi.fn();
+let mockTxStatus: number | undefined = 0;
+const mockWriteContract = vi.fn();
+const mockGetTransaction = vi.fn();
+const mockGetTransactionReceipt = vi.fn();
 
 // Mock GenLayer Client Config
 vi.mock('../client', () => ({
@@ -38,7 +39,7 @@ const mockEvidence: ProjectEvidence = {
     analysis_timestamp: new Date().toISOString(),
 };
 
-describe('GenLayer Polling Lifecycle', () => {
+describe('GenLayer Stateless Submissions', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -47,20 +48,39 @@ describe('GenLayer Polling Lifecycle', () => {
         mockGetTransactionReceipt.mockResolvedValue({ txExecutionResultName: 'SUCCESS' });
     });
 
-    it('should successfully finalize immediately if tx reaches finalized', async () => {
-        mockTxStatus = 5; // FINALIZED
+    it('submitVerification should return PENDING implicitly with a valid hash', async () => {
         const result = await submitVerification(mockEvidence);
-        expect(result.status).toBe(GenLayerVerificationStatus.VERIFIED);
+        expect(result.status).toBe(GenLayerVerificationStatus.PENDING);
         expect(result.transactionHash).toBe('0xabc');
+    });
+
+    it('fetchVerificationStatus should NOT treat ACCEPTED (5) as FINALIZED', async () => {
+        mockTxStatus = 5; // ACCEPTED
+        const result = await fetchVerificationStatus('0xabc');
+        expect(result.status).toBe(GenLayerVerificationStatus.EXECUTING);
+    });
+
+    it('fetchVerificationStatus should return VERIFIED when FINALIZED (7) succeeds', async () => {
+        mockTxStatus = 7; // FINALIZED
+        const result = await fetchVerificationStatus('0xabc');
+        expect(result.status).toBe(GenLayerVerificationStatus.VERIFIED);
         expect(result.result?.trust_score).toBe(95);
     });
 
-    it('should return FAILED if execution result is FINISHED_WITH_ERROR', async () => {
-        mockTxStatus = 5; // FINALIZED
+    it('fetchVerificationStatus should return FAILED if FINALIZED (7) executes with FINISHED_WITH_ERROR', async () => {
+        mockTxStatus = 7; // FINALIZED
         mockGetTransactionReceipt.mockResolvedValueOnce({ txExecutionResultName: 'FINISHED_WITH_ERROR' });
 
-        const result = await submitVerification(mockEvidence);
+        const result = await fetchVerificationStatus('0xabc');
         expect(result.status).toBe(GenLayerVerificationStatus.FAILED);
-        expect(result.error).toContain('failed during consensus');
+        expect(result.error).toContain('FINISHED_WITH_ERROR');
+    });
+
+    it('fetchVerificationStatus should gracefully drop into PENDING during momentary indexing failure', async () => {
+        mockTxStatus = undefined;
+        mockGetTransaction.mockRejectedValueOnce(new Error("indexing not ready"));
+
+        const result = await fetchVerificationStatus('0xabc');
+        expect(result.status).toBe(GenLayerVerificationStatus.PENDING);
     });
 });

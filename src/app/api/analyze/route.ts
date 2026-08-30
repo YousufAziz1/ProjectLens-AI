@@ -76,12 +76,9 @@ export async function POST(request: Request) {
                     const normalizer = new ResultNormalizer();
                     const normalizedResult = normalizer.normalize(orchestratorResult.results);
 
-                    emit("Building final report");
+                    // Build evidence from the pipeline outputs early
                     const reportAgent = new MasterReportAgent();
                     const finalReport = reportAgent.compileReport(projectName, normalizedResult, collectedData);
-
-                    // Still save locally for non-Vercel dev environments
-                    await storage.saveCollection(id, finalReport as unknown as UnifiedCollectorOutput);
 
                     // === GenLayer Verification Stage ===
                     let genlayerResult = null;
@@ -100,11 +97,11 @@ export async function POST(request: Request) {
                             emit("GenLayer Consensus", { genlayer_status: GenLayerVerificationStatus.EXECUTING });
 
                             // Submit to GenLayer contract and stream consensus statuses
-                            genlayerResult = await submitVerification(evidence, (statusState, txHash) => {
-                                emit("GenLayer Consensus", {
-                                    genlayer_status: statusState.toLowerCase(),
-                                    transactionHash: txHash
-                                });
+                            genlayerResult = await submitVerification(evidence);
+
+                            emit("GenLayer Submitted", {
+                                genlayer_status: genlayerResult.status.toLowerCase(),
+                                transactionHash: genlayerResult.transactionHash
                             });
 
                             if (genlayerResult.status === GenLayerVerificationStatus.VERIFIED) {
@@ -143,6 +140,9 @@ export async function POST(request: Request) {
                             network: 'none',
                         };
                     }
+
+                    // Unified persistent save with the latest GenLayer transaction hash securely embedded
+                    await storage.saveCollection(id, { ...finalReport, genlayer: genlayerResult });
 
                     emit("Complete");
                     controller.enqueue(encoder.encode(`data: ${JSON.stringify({
