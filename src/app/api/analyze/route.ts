@@ -92,8 +92,8 @@ export async function POST(request: Request) {
                         try {
                             // Build evidence from the pipeline outputs
                             const evidence = buildProjectEvidence(
-                                finalReport as Record<string, unknown>,
-                                collectedData as unknown as Record<string, unknown>,
+                                finalReport,
+                                collectedData,
                                 { websiteUrl: websiteUrl || undefined, githubUrl: githubUrl || undefined, docsUrl: docsUrl || undefined }
                             );
 

@@ -3,93 +3,62 @@
  * into structured ProjectEvidence for GenLayer contract submission.
  */
 import type { ProjectEvidence } from './types';
-
-interface ReportData {
-    projectName?: string;
-    overallScore?: number;
-    score?: number;
-    categoryScores?: Record<string, number>;
-    findings?: Array<{
-        severity?: string;
-        title?: string;
-        description?: string;
-        type?: string;
-    }>;
-    ecosystemIntegrations?: Array<{
-        name?: string;
-        status?: string;
-    }>;
-    [key: string]: unknown;
-}
-
-interface CollectedData {
-    github?: {
-        stars?: number;
-        forks?: number;
-        openIssues?: number;
-        recentCommits?: number;
-        contributors?: number;
-        license?: string | null;
-        primaryLanguage?: string | null;
-        [key: string]: unknown;
-    };
-    documentation?: {
-        quality?: string;
-        sectionsFound?: string[];
-        sectionsMissing?: string[];
-        [key: string]: unknown;
-    };
-    [key: string]: unknown;
-}
+import type { FinalReport } from '../ai/schemas';
+import type { UnifiedCollectorOutput } from '@/types';
 
 /**
  * Build a ProjectEvidence object from the existing pipeline outputs.
  * This bridges the gap between the existing scoring engine and GenLayer.
  */
 export function buildProjectEvidence(
-    report: ReportData,
-    collectedData: CollectedData,
+    report: FinalReport,
+    collectedData: UnifiedCollectorOutput,
     input: { websiteUrl?: string; githubUrl?: string; docsUrl?: string }
 ): ProjectEvidence {
-    const github = collectedData?.github;
-    const docs = collectedData?.documentation;
+    const github = collectedData?.github?.data;
 
-    // Extract security findings
-    const securityFindings = (report.findings || [])
-        .filter(f => f.severity && f.severity !== 'info')
-        .slice(0, 10)
-        .map(f => ({
-            severity: f.severity || 'info',
-            title: sanitizeString(f.title || 'Unknown Finding'),
-            description: sanitizeString((f.description || '').slice(0, 300)),
-        }));
+    // Security Findings from FinalReport
+    const securityFindings = [
+        ...(report.securityPenalties || []).map(penalty => ({
+            severity: penalty.penalty > 20 ? 'high' : penalty.penalty > 10 ? 'medium' : 'low',
+            title: sanitizeString(penalty.reason.slice(0, 50)),
+            description: sanitizeString(penalty.reason)
+        })),
+        ...(report.weaknesses || []).map(weakness => ({
+            severity: 'medium',
+            title: 'Reported Weakness',
+            description: sanitizeString(weakness)
+        }))
+    ].slice(0, 10);
 
-    // Build repository metrics
+    // Build repository metrics from github.data
     const repositoryMetrics = github ? {
         stars: github.stars || 0,
         forks: github.forks || 0,
         open_issues: github.openIssues || 0,
-        recent_commits: github.recentCommits || 0,
-        contributors: github.contributors || 0,
+        recent_commits: github.recentCommits?.length || 0,
+        contributors: github.contributorsCount || 0,
         has_license: !!github.license,
-        primary_language: github.primaryLanguage || null,
+        primary_language: 'unknown', // github data does not have primaryLanguage natively
     } : null;
 
-    // Build documentation findings
-    const documentationFindings = docs ? {
-        quality: docs.quality || 'unknown',
-        sections_found: (docs.sectionsFound || []).map(sanitizeString),
-        sections_missing: (docs.sectionsMissing || []).map(sanitizeString),
+    // Build documentation findings from extracted facts
+    const facts = report.extractedFacts;
+    const documentationFindings = facts ? {
+        quality: report.categoryScores.documentation > 75 ? 'adequate' : 'insufficient',
+        sections_found: (facts.docSections || []).map(sanitizeString),
+        sections_missing: (facts.missingDocSections || []).map(sanitizeString),
     } : null;
 
-    // Extract category scores
-    const categoryScores = report.categoryScores || {};
+    // Extract category scores directly from proper Report map
+    const categoryScores = report.categoryScores || { security: 0, repository: 0, documentation: 0, transparency: 0, tokenomics: 0 };
     const deterministicScores = {
         security_score: categoryScores.security || 0,
         repository_score: categoryScores.repository || 0,
         documentation_score: categoryScores.documentation || 0,
         transparency_score: categoryScores.transparency || 0,
-        overall_score: (report.overallScore as number) || (report.score as number) || 0,
+        // @ts-ignore - score exists on the compiled output before we typed it strictly, using fallback
+        overall_score: (report as any).score || (report.categoryScores ? Math.round((categoryScores.security * 0.4) + (categoryScores.repository * 0.25) + (categoryScores.documentation * 0.2) + (categoryScores.transparency * 0.1) + (categoryScores.tokenomics * 0.05)) : 0),
     };
 
     return {
@@ -108,12 +77,14 @@ export function buildProjectEvidence(
 /**
  * Count the total number of evidence items collected.
  */
-function countEvidence(collectedData: CollectedData, report: ReportData): number {
+function countEvidence(collectedData: UnifiedCollectorOutput, report: FinalReport): number {
     let count = 0;
-    if (collectedData?.github) count += 1;
-    if (collectedData?.documentation) count += 1;
-    if (report.findings) count += report.findings.length;
-    if (report.ecosystemIntegrations) count += report.ecosystemIntegrations.length;
+    if (collectedData?.github?.status === 'success') count += 1;
+    if (collectedData?.documentation?.status === 'success') count += 1;
+    if (collectedData?.website?.status === 'success') count += 1;
+    if (report.securityPenalties?.length) count += report.securityPenalties.length;
+    if (report.evidence?.length) count += report.evidence.length;
+    if (report.extractedFacts?.ecosystemIntegrations?.length) count += report.extractedFacts.ecosystemIntegrations.length;
     return count;
 }
 
