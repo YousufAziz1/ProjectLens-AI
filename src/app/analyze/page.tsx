@@ -5,13 +5,14 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Clock, ShieldAlert, Cpu, Database, Eye, FileText } from 'lucide-react';
+import { CheckCircle2, Clock, ShieldAlert, Cpu, Database, FileText, ShieldCheck } from 'lucide-react';
 
 export default function AnalyzePage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [progress, setProgress] = useState<string[]>([]);
+    const [genlayerStatus, setGenlayerStatus] = useState<string | null>(null);
 
     // Detailed Dashboard State
     const [startTime, setStartTime] = useState<number | null>(null);
@@ -77,11 +78,17 @@ export default function AnalyzePage() {
                     for (const line of lines) {
                         if (line.trim().startsWith('data: ')) {
                             const payload = JSON.parse(line.trim().slice(6));
+                            if (payload.genlayer_status) {
+                                setGenlayerStatus(payload.genlayer_status);
+                            }
                             if (payload.stage) {
                                 setProgress(prev => [...prev, payload.stage]);
                             } else if (payload.success && payload.id) {
                                 if (payload.report) {
                                     sessionStorage.setItem('projectlens-report-' + payload.id, JSON.stringify(payload.report));
+                                }
+                                if (payload.genlayer) {
+                                    sessionStorage.setItem('projectlens-genlayer-' + payload.id, JSON.stringify(payload.genlayer));
                                 }
                                 setSuccessId(payload.id);
                             } else if (payload.error) {
@@ -99,7 +106,7 @@ export default function AnalyzePage() {
     }
 
     // Heuristic Metric Calculations for Dashboard
-    const estimatedTotalStages = 7;
+    const estimatedTotalStages = 10; // Includes GenLayer verification stages
     const isProlongedTime = elapsedSeconds > 120;
     const progressPercent = successId ? 100 : Math.min(Math.round((progress.length / estimatedTotalStages) * 100), 95);
     const mockEvidenceCount = progress.length * 12 + Math.floor(elapsedSeconds / 3);
@@ -288,15 +295,22 @@ export default function AnalyzePage() {
                                     <p>[SYS] Orchestrator Node Connected at ms:{startTime?.toString().slice(-4) || '0000'}</p>
                                     <p>[SYS] Warming up parallel inference matrix...</p>
                                 </div>
-                                {progress.map((stage, idx) => (
-                                    <div key={idx} className="flex items-center gap-4 text-sm text-emerald-400 animate-in slide-in-from-left-4 fade-in duration-500">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-                                        <span className="font-semibold tracking-tight uppercase group hover:text-emerald-300 transition-colors cursor-default">
-                                            {stage}
-                                            <span className="opacity-0 group-hover:opacity-100 transition-opacity text-emerald-500/50 text-[10px] ml-3 font-normal">T+{((idx + 1) * 3)}s</span>
-                                        </span>
-                                    </div>
-                                ))}
+                                {progress.map((stage, idx) => {
+                                    const isGenlayer = stage.startsWith('GenLayer');
+                                    return (
+                                        <div key={idx} className={`flex items-center gap-4 text-sm animate-in slide-in-from-left-4 fade-in duration-500 ${isGenlayer ? 'text-violet-400' : 'text-emerald-400'}`}>
+                                            {isGenlayer ? (
+                                                <ShieldCheck className="w-4 h-4 text-violet-500 shrink-0 drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
+                                            ) : (
+                                                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                                            )}
+                                            <span className={`font-semibold tracking-tight uppercase group transition-colors cursor-default ${isGenlayer ? 'hover:text-violet-300' : 'hover:text-emerald-300'}`}>
+                                                {stage}
+                                                <span className={`opacity-0 group-hover:opacity-100 transition-opacity text-[10px] ml-3 font-normal ${isGenlayer ? 'text-violet-500/50' : 'text-emerald-500/50'}`}>T+{((idx + 1) * 3)}s</span>
+                                            </span>
+                                        </div>
+                                    );
+                                })}
                                 {!successId && !error && (
                                     <div className="flex items-center gap-4 text-sm font-bold text-primary mt-4">
                                         <span className="w-4 h-4 rounded-full border-2 border-primary/30 border-t-primary animate-spin shadow-[0_0_8px_rgba(59,130,246,0.5)]"></span>
@@ -312,7 +326,12 @@ export default function AnalyzePage() {
                                         <FileText className="w-6 h-6 text-white" />
                                     </div>
                                     <h4 className="text-lg font-black text-white mb-2 uppercase tracking-wide">Final Report Verified</h4>
-                                    <p className="text-sm text-zinc-400 mb-6 font-medium">100% Deterministic Evidence Matrix Successfully Compiled.</p>
+                                    <p className="text-sm text-zinc-400 mb-4 font-medium">Evidence Matrix Compiled & GenLayer Consensus {genlayerStatus === 'verified' ? 'Complete' : genlayerStatus === 'unavailable' ? '(Unavailable — Not Configured)' : 'Attempted'}.</p>
+                                    {genlayerStatus === 'verified' && (
+                                        <div className="bg-violet-500/10 border border-violet-500/30 rounded-lg px-4 py-2 mb-4 text-xs font-bold text-violet-400 uppercase tracking-wider flex items-center gap-2">
+                                            <ShieldCheck className="w-4 h-4" /> GenLayer Consensus Verified
+                                        </div>
+                                    )}
                                     <Button onClick={() => router.push(`/report/${successId}`)} size="lg" className="w-full text-base font-black uppercase tracking-wider h-14 bg-emerald-600 hover:bg-emerald-500 text-white shadow-xl shadow-emerald-900/50">
                                         View Institutional AI Report &rarr;
                                     </Button>

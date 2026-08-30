@@ -5,6 +5,8 @@ import { UnifiedCollectorInput, UnifiedCollectorOutput } from '@/types';
 import { AgentOrchestrator } from '@/lib/agents/orchestrator';
 import { ResultNormalizer } from '@/lib/agents/result-normalizer';
 import { MasterReportAgent } from '@/lib/agents/master-report-agent';
+import { submitVerification, isGenLayerConfigured, GenLayerVerificationStatus } from '@/lib/genlayer';
+import { buildProjectEvidence } from '@/lib/genlayer/evidence-builder';
 
 export const maxDuration = 60; // Max execution time for Vercel functions (60 seconds)
 
@@ -48,8 +50,8 @@ export async function POST(request: Request) {
         const encoder = new TextEncoder();
         const stream = new ReadableStream({
             async start(controller) {
-                const emit = (stage: string) => {
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({ stage })}\n\n`));
+                const emit = (stage: string, data?: Record<string, unknown>) => {
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({ stage, ...data })}\n\n`));
                 };
 
                 try {
@@ -57,7 +59,6 @@ export async function POST(request: Request) {
                     const collectedData = await runUnifiedCollection(id, input);
 
                     emit("Parsing documentation");
-                    // Assuming basic collection holds for parsers
 
                     emit("Running Whitepaper Agent");
                     emit("Running GitHub Agent");
@@ -82,8 +83,69 @@ export async function POST(request: Request) {
                     // Still save locally for non-Vercel dev environments
                     await storage.saveCollection(id, finalReport as unknown as UnifiedCollectorOutput);
 
+                    // === GenLayer Verification Stage ===
+                    let genlayerResult = null;
+
+                    if (isGenLayerConfigured()) {
+                        emit("GenLayer Verification", { genlayer_status: GenLayerVerificationStatus.SUBMITTING });
+
+                        try {
+                            // Build evidence from the pipeline outputs
+                            const evidence = buildProjectEvidence(
+                                finalReport as Record<string, unknown>,
+                                collectedData as unknown as Record<string, unknown>,
+                                { websiteUrl: websiteUrl || undefined, githubUrl: githubUrl || undefined, docsUrl: docsUrl || undefined }
+                            );
+
+                            emit("GenLayer Consensus", { genlayer_status: GenLayerVerificationStatus.EXECUTING });
+
+                            // Submit to GenLayer contract and wait for consensus
+                            genlayerResult = await submitVerification(evidence);
+
+                            if (genlayerResult.status === GenLayerVerificationStatus.VERIFIED) {
+                                emit("GenLayer Verified", { genlayer_status: GenLayerVerificationStatus.VERIFIED });
+                            } else {
+                                emit("GenLayer Verification Failed", {
+                                    genlayer_status: genlayerResult.status,
+                                    genlayer_error: genlayerResult.error,
+                                });
+                            }
+                        } catch (glError) {
+                            const glMsg = glError instanceof Error ? glError.message : String(glError);
+                            emit("GenLayer Verification Failed", {
+                                genlayer_status: GenLayerVerificationStatus.FAILED,
+                                genlayer_error: glMsg,
+                            });
+                            genlayerResult = {
+                                status: GenLayerVerificationStatus.FAILED,
+                                result: null,
+                                transactionHash: null,
+                                contractAddress: null,
+                                executionTimestamp: new Date().toISOString(),
+                                error: glMsg,
+                                network: 'unknown',
+                            };
+                        }
+                    } else {
+                        // GenLayer not configured — mark as unavailable
+                        genlayerResult = {
+                            status: GenLayerVerificationStatus.UNAVAILABLE,
+                            result: null,
+                            transactionHash: null,
+                            contractAddress: null,
+                            executionTimestamp: null,
+                            error: 'GenLayer not configured',
+                            network: 'none',
+                        };
+                    }
+
                     emit("Complete");
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({ id, success: true, report: finalReport })}\n\n`));
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                        id,
+                        success: true,
+                        report: finalReport,
+                        genlayer: genlayerResult,
+                    })}\n\n`));
                     controller.close();
                 } catch (err) {
                     const msg = err instanceof Error ? err.message : String(err);

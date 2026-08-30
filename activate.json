@@ -1,0 +1,3 @@
+[onchainos] checking A2A communication readiness (okx-a2a doctor)...
+[onchainos] A2A communication is ready
+{"ok":true,"data":{"activate":{"approvalStatus":2,"rejectReason":null,"success":false}}}

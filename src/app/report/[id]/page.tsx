@@ -6,7 +6,8 @@ import { FinalReport } from '@/lib/ai/schemas';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, XCircle, AlertCircle, Clock, Info, Check, AlertTriangle, Bug, FileText, Blocks, Shield, GitBranch, BookOpen, Users, Coins } from 'lucide-react';
+import { CheckCircle2, XCircle, AlertCircle, Clock, Info, Check, AlertTriangle, Bug, FileText, Blocks, Shield, GitBranch, BookOpen, Users, Coins, ShieldCheck, Scale, Network } from 'lucide-react';
+import { GenLayerVerificationResponse } from '@/lib/genlayer';
 
 function getSeverityColor(sev: string) {
     const raw = (sev || '').toUpperCase();
@@ -35,6 +36,7 @@ export default function ReportPage(props: { params: Promise<{ id: string }> }) {
     const params = use(props.params);
     const router = useRouter();
     const [data, setData] = useState<FinalReport | null>(null);
+    const [genlayerData, setGenlayerData] = useState<GenLayerVerificationResponse | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -69,13 +71,26 @@ export default function ReportPage(props: { params: Promise<{ id: string }> }) {
                 } catch (e) {
                     console.error('Failed to parse cached report', e);
                 }
+
+                const glCached = sessionStorage.getItem('projectlens-genlayer-' + params.id);
+                if (glCached) {
+                    try {
+                        setGenlayerData(JSON.parse(glCached));
+                    } catch (e) {
+                        console.error('Failed to parse cached genlayer', e);
+                    }
+                }
+
                 setIsLoading(false);
             } else {
                 // If not in sessionStorage, check server API (for local environments)
                 fetch(`/api/report/${params.id}`)
                     .then(r => r.ok ? r.json() : null)
                     .then(d => {
-                        if (d) setData(d);
+                        if (d) {
+                            setData(d);
+                            if (d.genlayer) setGenlayerData(d.genlayer);
+                        }
                     })
                     .catch(() => { })
                     .finally(() => setIsLoading(false));
@@ -211,6 +226,121 @@ export default function ReportPage(props: { params: Promise<{ id: string }> }) {
                     {allEvidenceCards.length > 0 && <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-bold border border-blue-500/20 shadow-sm"><CheckCircle2 className="w-3.5 h-3.5" /> Evidence Linked ({allEvidenceCards.length})</span>}
                 </div>
             </div>
+
+            <Card className="mb-8 border-violet-500/30 bg-zinc-950 shadow-2xl overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
+                <CardContent className="p-6 md:p-8 relative z-10">
+                    <div className="flex flex-col md:flex-row justify-between gap-6 items-start">
+                        <div className="flex-1 space-y-4">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-violet-500/20 rounded-lg ring-1 ring-violet-500/30">
+                                    <ShieldCheck className="w-6 h-6 text-violet-400" />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-black text-white uppercase tracking-wide">GenLayer Verification Consensus</h2>
+                                    <p className="text-sm font-medium text-violet-400/80">TrustLens Intelligent Contract • Optimistic Democracy</p>
+                                </div>
+                            </div>
+                            <p className="text-sm text-zinc-400 leading-relaxed max-w-3xl">
+                                ProjectLens deterministic evidence was submitted on-chain to the GenLayer network. Multiple independent AI validators evaluated the evidence payload to reach consensus on the target's risk profile without relying on a centralized scoring authority.
+                            </p>
+
+                            {genlayerData?.status === 'verified' && genlayerData.result ? (
+                                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                                        <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Consensus Score</div>
+                                        <div className="text-3xl font-black text-white">{genlayerData.result.trust_score}<span className="text-sm font-semibold text-zinc-500 ml-1">/100</span></div>
+                                    </div>
+                                    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                                        <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Network Decision</div>
+                                        <div className={`text-xl font-black uppercase mt-1 ${genlayerData.result.decision === 'reject' ? 'text-red-500' : genlayerData.result.decision === 'caution' ? 'text-yellow-500' : 'text-emerald-500'}`}>
+                                            {genlayerData.result.decision}
+                                        </div>
+                                    </div>
+                                    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                                        <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Risk Assessed</div>
+                                        <div className="text-lg font-bold text-zinc-200 mt-1 capitalize">{genlayerData.result.risk_level} Risk</div>
+                                    </div>
+                                    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                                        <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Evidence Quality</div>
+                                        <div className="text-lg font-bold text-zinc-200 mt-1 capitalize">{genlayerData.result.evidence_quality}</div>
+                                    </div>
+                                </div>
+                            ) : genlayerData?.status === 'executing' || genlayerData?.status === 'pending' || genlayerData?.status === 'submitting' ? (
+                                <div className="mt-6 p-6 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center gap-4">
+                                    <span className="w-5 h-5 rounded-full border-2 border-violet-500/30 border-t-violet-500 animate-spin"></span>
+                                    <span className="text-sm font-bold text-zinc-300 uppercase tracking-widest">Awaiting Network Finalization...</span>
+                                </div>
+                            ) : genlayerData?.status === 'unavailable' ? (
+                                <div className="mt-6 p-4 bg-zinc-900 border border-zinc-800 rounded-xl flex items-start gap-3">
+                                    <Info className="w-5 h-5 text-zinc-500 shrink-0 mt-0.5" />
+                                    <div>
+                                        <div className="text-sm font-bold text-zinc-300">GenLayer Network Not Configured</div>
+                                        <div className="text-xs text-zinc-500 mt-1">Verification is bypassed because the contract address or network credentials are not present in the current environment. Defaulting to centralized deterministic scoring.</div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="mt-6 p-4 bg-red-950/20 border border-red-900/30 rounded-xl flex items-start gap-3">
+                                    <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                                    <div>
+                                        <div className="text-sm font-bold text-red-400">Consensus Verification Failed</div>
+                                        <div className="text-xs text-red-400/80 mt-1">{genlayerData?.error || 'Unknown network execution fault.'}</div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {genlayerData?.status === 'verified' && genlayerData.result && (
+                                <div className="mt-4 pt-4 border-t border-zinc-800">
+                                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-3">Validator Rationale</h4>
+                                    <p className="text-sm text-zinc-300 font-medium italic border-l-2 border-violet-500/50 pl-4">{genlayerData.result.rationale}</p>
+
+                                    {genlayerData.result.key_findings && genlayerData.result.key_findings.length > 0 && (
+                                        <div className="mt-6">
+                                            <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-3">Independent Key Findings</h4>
+                                            <ul className="space-y-2">
+                                                {genlayerData.result.key_findings.map((f, i) => (
+                                                    <li key={i} className="text-xs text-zinc-400 flex items-start gap-2">
+                                                        <span className="text-violet-500 font-black mt-0.5">•</span> {f}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        {genlayerData?.transactionHash && (
+                            <div className="w-full md:w-64 shrink-0 bg-black/40 border border-zinc-800 rounded-xl p-4 font-mono text-[10px]">
+                                <h4 className="font-bold text-violet-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><Network className="w-3.5 h-3.5" /> Transaction Ledger</h4>
+
+                                <div className="space-y-3">
+                                    <div>
+                                        <div className="text-zinc-500 mb-1">Status</div>
+                                        <div className="text-emerald-400 font-bold uppercase tracking-wider">Finalized</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-zinc-500 mb-1">Network</div>
+                                        <div className="text-zinc-300">{genlayerData.network || 'testnetBradbury'}</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-zinc-500 mb-1">Contract Hash</div>
+                                        <div className="text-zinc-400 truncate opacity-80" title={genlayerData.contractAddress || ''}>{genlayerData.contractAddress || '0x...'}</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-zinc-500 mb-1">Transaction ID</div>
+                                        <div className="text-zinc-400 truncate opacity-80" title={genlayerData.transactionHash}>{genlayerData.transactionHash}</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-zinc-500 mb-1">Execution Time</div>
+                                        <div className="text-zinc-400 truncate">{new Date(genlayerData.executionTimestamp || Date.now()).toLocaleString()}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
 
             <Card className="mb-8 border-primary/20 bg-primary/5 shadow-sm overflow-hidden relative">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
